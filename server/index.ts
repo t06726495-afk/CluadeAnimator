@@ -241,10 +241,12 @@ app.get('/api/players/:id/detail', asyncRoute((req, res) => {
        WHERE prs.player_id = ? ORDER BY s.year`
     )
     .all(req.params.id, req.params.id) as any[];
+  const abilities = db.prepare('SELECT * FROM player_abilities WHERE player_id = ?').all(req.params.id);
   res.json({
     player,
     stats: stats.map((r) => ({ ...r, stats: JSON.parse(r.stats) })),
     ratings: ratings.map((r) => ({ ...r, attributes: JSON.parse(r.attributes) })),
+    abilities,
   });
 }));
 
@@ -257,6 +259,39 @@ app.post('/api/ratings', asyncRoute((req, res) => {
      ON CONFLICT(player_id, season_id, week) DO UPDATE SET overall = excluded.overall, attributes = excluded.attributes`
   ).run(player_id, season_id ?? activeSeasonId(), week, overall ?? null, JSON.stringify(attributes ?? {}));
   res.json({ ok: true });
+}));
+
+// ---------- abilities ----------
+// Shared shape for both players and recruits: replace-the-whole-set on PUT.
+// Mental abilities are capped at 3 server-side regardless of what the client sends.
+
+function setAbilities(table: 'player_abilities' | 'recruit_abilities', fk: 'player_id' | 'recruit_id', id: number, abilities: any[]) {
+  const physical = abilities.filter((a) => a.category === 'physical' && a.name && a.tier);
+  const mental = abilities.filter((a) => a.category === 'mental' && a.name && a.tier).slice(0, 3);
+  const tx = db.transaction(() => {
+    db.prepare(`DELETE FROM ${table} WHERE ${fk} = ?`).run(id);
+    const insert = db.prepare(`INSERT INTO ${table} (${fk}, category, name, tier) VALUES (?, ?, ?, ?)`);
+    for (const a of [...physical, ...mental]) insert.run(id, a.category, a.name, a.tier);
+  });
+  tx();
+}
+
+app.get('/api/players/:id/abilities', (req, res) => {
+  res.json(db.prepare('SELECT * FROM player_abilities WHERE player_id = ?').all(req.params.id));
+});
+
+app.put('/api/players/:id/abilities', asyncRoute((req, res) => {
+  setAbilities('player_abilities', 'player_id', Number(req.params.id), req.body?.abilities ?? []);
+  res.json(db.prepare('SELECT * FROM player_abilities WHERE player_id = ?').all(req.params.id));
+}));
+
+app.get('/api/recruits/:id/abilities', (req, res) => {
+  res.json(db.prepare('SELECT * FROM recruit_abilities WHERE recruit_id = ?').all(req.params.id));
+});
+
+app.put('/api/recruits/:id/abilities', asyncRoute((req, res) => {
+  setAbilities('recruit_abilities', 'recruit_id', Number(req.params.id), req.body?.abilities ?? []);
+  res.json(db.prepare('SELECT * FROM recruit_abilities WHERE recruit_id = ?').all(req.params.id));
 }));
 
 // ---------- standings ----------

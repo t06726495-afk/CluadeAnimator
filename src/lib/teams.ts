@@ -172,22 +172,23 @@ export function accentFor(hex: string): string {
   return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
-// Position -> selectable archetypes, matching the game's archetype system.
+// Position -> selectable archetypes. Sourced directly from the in-game
+// archetype/ability reference (collegefootball.gg/abilities) — not guessed.
 export const ARCHETYPES_BY_POSITION: Record<string, string[]> = {
-  QB: ['Field General', 'Strong Arm', 'Backfield Creator', 'Dual Threat', 'Pure Runner'],
-  RB: ['Elusive Bruiser', 'Contact Seeker', 'East/West Playmaker', 'Backfield Boss'],
+  QB: ['Backfield Creator', 'Dual Threat', 'Pocket Passer', 'Pure Runner'],
+  RB: ['Backfield Threat', 'Contact Seeker', 'East/West Playmaker', 'Elusive Bruiser', 'North/South Receiver'],
   FB: ['Blocking', 'Utility'],
-  WR: ['Elusive Route Runner', 'Physical Route Runner', 'Gadget', 'Gritty Possession Route Runner', 'Speedster', 'Contested Specialist'],
-  TE: ['Vertical Threat', 'Physical Route Runner', 'Possession Route Runner', 'Blocking'],
-  OT: ['Pass Protector', 'Raw Strength', 'Agile'],
-  LT: ['Pass Protector', 'Raw Strength', 'Agile'],
-  IOL: ['Pass Protector', 'Raw Strength', 'Agile'],
-  EDGE: ['Speed Rusher', 'Power Rusher', 'Contain Specialist'],
-  DT: ['Gap Specialist', 'Physical Freak', 'Power Rusher'],
-  LB: ['Signal Caller', 'Thumper', 'Coverage Specialist'],
+  WR: ['Contested Specialist', 'Elusive Route Runner', 'Gadget', 'Gritty Possession', 'Physical Route Runner', 'Route Artist', 'Speedster'],
+  TE: ['Gritty Possession', 'Physical Route Runner', 'Pure Possession', 'Pure Blocker', 'Vertical Threat'],
+  OT: ['Agile', 'Pass Protector', 'Raw Strength', 'Well Rounded'],
+  LT: ['Agile', 'Pass Protector', 'Raw Strength', 'Well Rounded'],
+  IOL: ['Agile', 'Pass Protector', 'Raw Strength', 'Well Rounded'],
+  EDGE: ['Edge Setter', 'Power Rusher', 'Pure Power', 'Speed Rusher'],
+  DT: ['Gap Specialist', 'Power Rusher', 'Pure Power', 'Speed Rusher'],
+  LB: ['Lurker', 'Signal Caller', 'Thumper'],
   CB: ['Boundary', 'Bump and Run', 'Field', 'Zone'],
-  S: ['Coverage Specialist', 'Hybrid', 'Run Support'],
+  S: ['Box Specialist', 'Coverage Specialist', 'Hybrid'],
   K: ['Accurate', 'Power'],
   P: ['Accurate', 'Power'],
-  ATH: ['Athlete', 'Utility'],
+  ATH: ['Athlete'],
 };

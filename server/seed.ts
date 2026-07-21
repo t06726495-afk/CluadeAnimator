@@ -3,8 +3,8 @@
 import { db } from './db.js';
 
 const tables = [
-  'imports', 'position_needs', 'events', 'class_rank_snapshots', 'recruit_snapshots', 'recruits',
-  'standings_snapshots', 'team_game_stats', 'player_rating_snapshots', 'player_game_stats',
+  'imports', 'position_needs', 'events', 'class_rank_snapshots', 'recruit_snapshots', 'recruit_abilities', 'recruits',
+  'standings_snapshots', 'team_game_stats', 'player_rating_snapshots', 'player_abilities', 'player_game_stats',
   'players', 'games', 'seasons', 'dynasty',
 ];
 for (const t of tables) db.prepare(`DELETE FROM ${t}`).run();
@@ -20,19 +20,19 @@ const seasonId = Number(db.prepare("INSERT INTO seasons (year, name, active) VAL
 
 // ---- roster ----
 const roster: Array<[string, string, string, string, string, number]> = [
-  ['Caleb Whitfield', 'QB', 'JR', 'Field General', 'Star', 7],
-  ['Marcus Delane', 'RB', 'SO', 'Elusive Back', 'Impact', 22],
-  ['DeShawn Carter', 'RB', 'FR', 'Power Back', 'Normal', 28],
-  ['Jalen Okafor', 'WR', 'JR', 'Deep Threat', 'Star', 11],
-  ['Tommy Reyes', 'WR', 'SO', 'Slot', 'Impact', 83],
-  ['Isaiah Brooks', 'WR', 'FR', 'Physical', 'Normal', 4],
+  ['Caleb Whitfield', 'QB', 'JR', 'Pocket Passer', 'Star', 7],
+  ['Marcus Delane', 'RB', 'SO', 'East/West Playmaker', 'Impact', 22],
+  ['DeShawn Carter', 'RB', 'FR', 'Contact Seeker', 'Normal', 28],
+  ['Jalen Okafor', 'WR', 'JR', 'Speedster', 'Star', 11],
+  ['Tommy Reyes', 'WR', 'SO', 'Route Artist', 'Impact', 83],
+  ['Isaiah Brooks', 'WR', 'FR', 'Physical Route Runner', 'Normal', 4],
   ['Grant Hollis', 'TE', 'SR', 'Vertical Threat', 'Normal', 88],
   ['Luke Vandermeer', 'LT', 'SR', 'Pass Protector', 'Normal', 74],
   ['Dre Simmons', 'EDGE', 'JR', 'Speed Rusher', 'Star', 9],
-  ['Malik Tanner', 'DT', 'SO', 'Run Stopper', 'Impact', 95],
-  ['Cade Murray', 'LB', 'JR', 'Field General', 'Impact', 44],
-  ['Xavier Bell', 'LB', 'SO', 'Run Stopper', 'Normal', 51],
-  ['Amir Johnson', 'CB', 'JR', 'Man to Man', 'Star', 2],
+  ['Malik Tanner', 'DT', 'SO', 'Gap Specialist', 'Impact', 95],
+  ['Cade Murray', 'LB', 'JR', 'Signal Caller', 'Impact', 44],
+  ['Xavier Bell', 'LB', 'SO', 'Thumper', 'Normal', 51],
+  ['Amir Johnson', 'CB', 'JR', 'Bump and Run', 'Star', 2],
   ['Trey Whitlock', 'CB', 'FR', 'Zone', 'Impact', 21],
   ['Jordan Pace', 'S', 'SR', 'Hybrid', 'Normal', 30],
 ];
@@ -149,16 +149,16 @@ for (const [week, conf, poll, confRec, overall] of standings) {
 const recruitRows: Array<[string, string, number, number, number, string, string, string, string | null, number]> = [
   ['Jaxon Rivers', 'QB', 5, 12, 2, 'CA', 'Dual Threat', 'committed', 'Oregon, USC', 42],
   ['Deon Walker', 'EDGE', 4, 88, 6, 'TX', 'Speed Rusher', 'committed', 'Texas, Texas A&M', 38],
-  ['Michael Osei', 'WR', 4, 104, 14, 'GA', 'Deep Threat', 'top 5', 'Georgia, Clemson', 30],
+  ['Michael Osei', 'WR', 4, 104, 14, 'GA', 'Contested Specialist', 'top 5', 'Georgia, Clemson', 30],
   ['Brady Kessler', 'IOL', 4, 130, 9, 'OH', 'Pass Protector', 'committed', 'Ohio State', 26],
-  ['Zion Hartley', 'CB', 4, 145, 11, 'FL', 'Man to Man', 'offered', 'Miami, Florida', 22],
-  ['Sam Tuiasosopo', 'DT', 4, 160, 12, 'WA', 'Run Stopper', 'top 5', 'Washington, Oregon', 25],
+  ['Zion Hartley', 'CB', 4, 145, 11, 'FL', 'Field', 'offered', 'Miami, Florida', 22],
+  ['Sam Tuiasosopo', 'DT', 4, 160, 12, 'WA', 'Pure Power', 'top 5', 'Washington, Oregon', 25],
   ['Elijah Grant', 'S', 3, 320, 20, 'AZ', 'Hybrid', 'offered', 'Arizona State', 12],
-  ['Connor Beck', 'TE', 3, 350, 15, 'UT', 'Possession', 'scouting', 'BYU, Utah', 6],
-  ['Andre Silva', 'RB', 4, 118, 8, 'CA', 'Elusive Back', 'lost', 'USC', 20],
-  ['Tyler Ngata', 'LB', 3, 410, 28, 'CA', 'Field General', 'offered', 'Cal, UCLA', 10],
-  ['Marcus Reed', 'WR', 3, 380, 44, 'NV', 'Slot', 'scouting', null, 4],
-  ['David Iosefa', 'OT', 4, 99, 7, 'HI', 'Power', 'top 5', 'Hawaii, USC, Oregon', 28],
+  ['Connor Beck', 'TE', 3, 350, 15, 'UT', 'Pure Possession', 'scouting', 'BYU, Utah', 6],
+  ['Andre Silva', 'RB', 4, 118, 8, 'CA', 'Elusive Bruiser', 'lost', 'USC', 20],
+  ['Tyler Ngata', 'LB', 3, 410, 28, 'CA', 'Lurker', 'offered', 'Cal, UCLA', 10],
+  ['Marcus Reed', 'WR', 3, 380, 44, 'NV', 'Gadget', 'scouting', null, 4],
+  ['David Iosefa', 'OT', 4, 99, 7, 'HI', 'Raw Strength', 'top 5', 'Hawaii, USC, Oregon', 28],
 ];
 const insertRecruit = db.prepare(
   `INSERT INTO recruits (season_id, name, position, stars, national_rank, position_rank, state, archetype, status, competitors, hours_spent)
@@ -192,5 +192,16 @@ for (const [week, type, desc] of eventRows) insertEvent.run(seasonId, week, type
 for (const [posn, target] of [['QB', 1], ['RB', 1], ['WR', 2], ['OT', 1], ['IOL', 1], ['EDGE', 2], ['CB', 2], ['S', 1], ['DT', 1], ['LB', 1], ['TE', 1]] as const) {
   db.prepare('INSERT INTO position_needs (season_id, position, target_count) VALUES (?, ?, ?)').run(seasonId, posn, target);
 }
+
+// ---- a couple of seeded abilities, to demo the feature ----
+const insertAbility = db.prepare('INSERT INTO player_abilities (player_id, category, name, tier) VALUES (?, ?, ?, ?)');
+insertAbility.run(pid['Caleb Whitfield'], 'physical', 'Resistance', 'gold');
+insertAbility.run(pid['Caleb Whitfield'], 'physical', 'Step Up', 'silver');
+insertAbility.run(pid['Caleb Whitfield'], 'physical', 'Sleight of Hand', 'platinum');
+insertAbility.run(pid['Caleb Whitfield'], 'mental', 'Clutch Kicker', 'gold');
+insertAbility.run(pid['Caleb Whitfield'], 'mental', 'The Natural', 'silver');
+insertAbility.run(pid['Marcus Delane'], 'physical', 'Recoup', 'gold');
+insertAbility.run(pid['Marcus Delane'], 'physical', 'Shifty', 'platinum');
+insertAbility.run(pid['Marcus Delane'], 'mental', 'Winning Time', 'bronze');
 
 console.log(`Seeded Stanford dynasty, 2026 season (season_id=${seasonId}), with 2024-25 history: ${roster.length} players, ${games.length} games, ${recruitRows.length} recruits.`);

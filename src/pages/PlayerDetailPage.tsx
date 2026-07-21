@@ -2,15 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { get, put } from '../lib/api';
 import type { Player, PlayerGameStat, RatingSnapshot } from '../lib/types';
+import type { AbilityEntry } from '../lib/abilities';
 import { SeriesChart } from '../components/charts';
+import { AbilitiesEditor, AbilityBadges } from '../components/Abilities';
 
-type Detail = { player: Player; stats: PlayerGameStat[]; ratings: RatingSnapshot[] };
+type Detail = { player: Player; stats: PlayerGameStat[]; ratings: RatingSnapshot[]; abilities: AbilityEntry[] };
 
 export default function PlayerDetailPage() {
   const { id } = useParams();
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState('');
   const [editingCell, setEditingCell] = useState<{ statId: number; key: string } | null>(null);
+  const [editingAbilities, setEditingAbilities] = useState(false);
+  const [abilityDraft, setAbilityDraft] = useState<AbilityEntry[]>([]);
+  const [savingAbilities, setSavingAbilities] = useState(false);
 
   const reload = () => get<Detail>(`/api/players/${id}/detail`).then(setDetail).catch((e) => setError(e.message));
   useEffect(() => { reload(); }, [id]);
@@ -49,6 +54,23 @@ export default function PlayerDetailPage() {
     await put(`/api/player-stats/${stat.id}`, { stats: next });
     setEditingCell(null);
     reload();
+  };
+
+  const startEditingAbilities = () => {
+    setAbilityDraft(detail.abilities);
+    setEditingAbilities(true);
+  };
+  const saveAbilities = async () => {
+    setSavingAbilities(true);
+    try {
+      await put(`/api/players/${player.id}/abilities`, { abilities: abilityDraft });
+      setEditingAbilities(false);
+      reload();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSavingAbilities(false);
+    }
   };
 
   const sumNumeric = (rows: PlayerGameStat[], key: string) => {
@@ -94,6 +116,26 @@ export default function PlayerDetailPage() {
           )}
         </div>
       )}
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="row" style={{ justifyContent: 'space-between' }}>
+          <h3 style={{ margin: 0 }}>Abilities</h3>
+          {!editingAbilities && <button className="btn sm" onClick={startEditingAbilities}>Edit</button>}
+        </div>
+        {editingAbilities ? (
+          <>
+            <AbilitiesEditor position={player.position} archetype={player.archetype} value={abilityDraft} onChange={setAbilityDraft} />
+            <div className="row" style={{ marginTop: 14, justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => setEditingAbilities(false)}>Cancel</button>
+              <button className="btn primary" onClick={saveAbilities} disabled={savingAbilities}>
+                {savingAbilities ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </>
+        ) : (
+          <AbilityBadges abilities={detail.abilities} />
+        )}
+      </div>
 
       {[...byCategory.entries()].map(([category, rows]) => {
         const keys = [...new Set(rows.flatMap((r) => Object.keys(r.stats)))];

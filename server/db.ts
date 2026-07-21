@@ -125,6 +125,22 @@ CREATE TABLE IF NOT EXISTS position_needs (
   target_count INTEGER NOT NULL DEFAULT 0,
   UNIQUE(season_id, position)
 );
+CREATE TABLE IF NOT EXISTS player_abilities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  player_id INTEGER NOT NULL REFERENCES players(id) ON DELETE CASCADE,
+  category TEXT NOT NULL CHECK (category IN ('physical','mental')),
+  name TEXT NOT NULL,
+  tier TEXT NOT NULL CHECK (tier IN ('bronze','silver','gold','platinum')),
+  UNIQUE(player_id, name)
+);
+CREATE TABLE IF NOT EXISTS recruit_abilities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  recruit_id INTEGER NOT NULL REFERENCES recruits(id) ON DELETE CASCADE,
+  category TEXT NOT NULL CHECK (category IN ('physical','mental')),
+  name TEXT NOT NULL,
+  tier TEXT NOT NULL CHECK (tier IN ('bronze','silver','gold','platinum')),
+  UNIQUE(recruit_id, name)
+);
 CREATE TABLE IF NOT EXISTS imports (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

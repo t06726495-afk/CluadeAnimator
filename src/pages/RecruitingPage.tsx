@@ -3,7 +3,9 @@ import { useSeason } from '../App';
 import { del, get, post, put } from '../lib/api';
 import { POSITIONS, RECRUIT_STATUSES, type DynastyEvent, type PositionNeed, type Recruit } from '../lib/types';
 import { ARCHETYPES_BY_POSITION } from '../lib/teams';
+import type { AbilityEntry } from '../lib/abilities';
 import TeamPicker from '../components/TeamPicker';
+import { AbilitiesEditor } from '../components/Abilities';
 
 const emptyForm = {
   name: '', position: 'QB', stars: '4', national_rank: '', position_rank: '', state: '',
@@ -19,6 +21,8 @@ export default function RecruitingPage() {
   const [editing, setEditing] = useState<number | null>(null);
   const [statusWeek, setStatusWeek] = useState('1');
   const [error, setError] = useState('');
+  const [abilities, setAbilities] = useState<AbilityEntry[]>([]);
+  const [savingAbilities, setSavingAbilities] = useState(false);
 
   const reload = () => {
     if (!season) return;
@@ -62,9 +66,33 @@ export default function RecruitingPage() {
       else await post('/api/recruits', body);
       setForm({ ...emptyForm });
       setEditing(null);
+      setAbilities([]);
       reload();
     } catch (e) {
       setError((e as Error).message);
+    }
+  };
+
+  const editRecruit = (r: Recruit) => {
+    setEditing(r.id);
+    setForm({
+      name: r.name, position: r.position, stars: String(r.stars ?? ''),
+      national_rank: String(r.national_rank ?? ''), position_rank: String(r.position_rank ?? ''),
+      state: r.state ?? '', archetype: r.archetype ?? '', status: r.status,
+      competitors: r.competitors ?? '', hours_spent: String(r.hours_spent ?? ''),
+    });
+    get<AbilityEntry[]>(`/api/recruits/${r.id}/abilities`).then(setAbilities).catch(() => setAbilities([]));
+  };
+
+  const saveAbilities = async () => {
+    if (!editing) return;
+    setSavingAbilities(true);
+    try {
+      await put(`/api/recruits/${editing}/abilities`, { abilities });
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSavingAbilities(false);
     }
   };
 
@@ -139,8 +167,20 @@ export default function RecruitingPage() {
           <label className="field">Hours<input type="number" style={{ width: 68 }} value={form.hours_spent} onChange={(e) => setForm({ ...form, hours_spent: e.target.value })} /></label>
           <label className="field">Week (for timeline)<input type="number" style={{ width: 60 }} value={statusWeek} onChange={(e) => setStatusWeek(e.target.value)} /></label>
           <button className="btn primary" onClick={submit} disabled={!form.name}>{editing ? 'Save' : 'Add'}</button>
-          {editing && <button className="btn" onClick={() => { setEditing(null); setForm({ ...emptyForm }); }}>Cancel</button>}
+          {editing && <button className="btn" onClick={() => { setEditing(null); setForm({ ...emptyForm }); setAbilities([]); }}>Cancel</button>}
         </div>
+
+        {editing && (
+          <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+            <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
+              <h3 style={{ margin: 0 }}>Abilities</h3>
+              <button className="btn sm primary" onClick={saveAbilities} disabled={savingAbilities}>
+                {savingAbilities ? 'Saving…' : 'Save abilities'}
+              </button>
+            </div>
+            <AbilitiesEditor position={form.position} archetype={form.archetype} value={abilities} onChange={setAbilities} />
+          </div>
+        )}
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>
@@ -167,18 +207,7 @@ export default function RecruitingPage() {
                   <td style={{ color: 'var(--text-2)', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.competitors ?? ''}</td>
                   <td className="num">{r.hours_spent ?? '—'}</td>
                   <td className="num">
-                    <button
-                      className="btn sm"
-                      onClick={() => {
-                        setEditing(r.id);
-                        setForm({
-                          name: r.name, position: r.position, stars: String(r.stars ?? ''),
-                          national_rank: String(r.national_rank ?? ''), position_rank: String(r.position_rank ?? ''),
-                          state: r.state ?? '', archetype: r.archetype ?? '', status: r.status,
-                          competitors: r.competitors ?? '', hours_spent: String(r.hours_spent ?? ''),
-                        });
-                      }}
-                    >Edit</button>{' '}
+                    <button className="btn sm" onClick={() => editRecruit(r)}>Edit</button>{' '}
                     <button className="btn sm danger" onClick={async () => { if (confirm(`Remove ${r.name} from the board?`)) { await del(`/api/recruits/${r.id}`); reload(); } }}>✕</button>
                   </td>
                 </tr>
