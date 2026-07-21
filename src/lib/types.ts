@@ -6,8 +6,12 @@ export type Game = {
 };
 export type Player = {
   id: number; name: string; position: string; class_year: string;
-  archetype: string | null; dev_trait: string | null; jersey: number | null; active: number;
+  archetype: string | null; dev_trait: string | null; jersey: number | null; active: number; redshirt: number;
 };
+
+export function classYearLabel(p: Pick<Player, 'class_year' | 'redshirt'>): string {
+  return p.redshirt ? `${p.class_year} (RS)` : p.class_year;
+}
 export type PlayerGameStat = {
   id: number; player_id: number; game_id: number; stat_category: string; stats: Record<string, unknown>;
   player_name?: string; position?: string; week?: number; opponent?: string; result?: string | null; season_id?: number;

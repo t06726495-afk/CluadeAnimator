@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { get, put } from '../lib/api';
-import type { Player, PlayerGameStat, RatingSnapshot } from '../lib/types';
+import { classYearLabel, type Player, type PlayerGameStat, type RatingSnapshot } from '../lib/types';
 import type { AbilityEntry } from '../lib/abilities';
 import { SeriesChart } from '../components/charts';
 import { AbilitiesEditor, AbilityBadges } from '../components/Abilities';
@@ -91,7 +91,7 @@ export default function PlayerDetailPage() {
         {player.name}
       </h1>
       <p className="page-sub">
-        {player.position} · {player.class_year}
+        {player.position} · {classYearLabel(player)}
         {player.archetype ? ` · ${player.archetype}` : ''}
         {player.dev_trait ? ` · ${player.dev_trait} dev` : ''}
       </p>

@@ -157,6 +157,12 @@ CREATE TABLE IF NOT EXISTS imports (
 );
 `);
 
+// Lightweight migration for DBs created before a column existed.
+const playerCols = db.prepare('PRAGMA table_info(players)').all() as Array<{ name: string }>;
+if (!playerCols.some((c) => c.name === 'redshirt')) {
+  db.exec('ALTER TABLE players ADD COLUMN redshirt INTEGER NOT NULL DEFAULT 0');
+}
+
 export function activeSeasonId(): number | null {
   const row = db.prepare('SELECT id FROM seasons WHERE active = 1 ORDER BY year DESC LIMIT 1').get() as { id: number } | undefined;
   return row?.id ?? null;

@@ -73,6 +73,21 @@ app.put('/api/dynasty', asyncRoute((req, res) => {
   res.json(db.prepare('SELECT * FROM dynasty WHERE id = 1').get());
 }));
 
+// Wipes every table — used to back out of a demo/test dynasty and return to
+// a genuinely blank slate (the Start Season screen).
+const ALL_DYNASTY_TABLES = [
+  'imports', 'position_needs', 'events', 'class_rank_snapshots', 'recruit_snapshots', 'recruit_abilities', 'recruits',
+  'standings_snapshots', 'team_game_stats', 'player_rating_snapshots', 'player_abilities', 'player_game_stats',
+  'players', 'games', 'seasons', 'dynasty',
+];
+app.delete('/api/dynasty', (_req, res) => {
+  const tx = db.transaction(() => {
+    for (const t of ALL_DYNASTY_TABLES) db.prepare(`DELETE FROM ${t}`).run();
+  });
+  tx();
+  res.json({ ok: true });
+});
+
 // ---------- seasons ----------
 
 app.get('/api/seasons', (_req, res) => {
@@ -198,17 +213,17 @@ app.get('/api/players', (req, res) => {
 });
 
 app.post('/api/players', asyncRoute((req, res) => {
-  const { name, position, class_year, archetype, dev_trait, jersey } = req.body;
+  const { name, position, class_year, archetype, dev_trait, jersey, redshirt } = req.body;
   const info = db
-    .prepare('INSERT INTO players (name, position, class_year, archetype, dev_trait, jersey) VALUES (?, ?, ?, ?, ?, ?)')
-    .run(name, position, class_year || 'FR', archetype ?? null, dev_trait ?? null, jersey ?? null);
+    .prepare('INSERT INTO players (name, position, class_year, archetype, dev_trait, jersey, redshirt) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .run(name, position, class_year || 'FR', archetype ?? null, dev_trait ?? null, jersey ?? null, redshirt ? 1 : 0);
   res.json(db.prepare('SELECT * FROM players WHERE id = ?').get(info.lastInsertRowid));
 }));
 
 app.put('/api/players/:id', asyncRoute((req, res) => {
-  const { name, position, class_year, archetype, dev_trait, jersey, active } = req.body;
-  db.prepare('UPDATE players SET name=?, position=?, class_year=?, archetype=?, dev_trait=?, jersey=?, active=? WHERE id=?').run(
-    name, position, class_year, archetype ?? null, dev_trait ?? null, jersey ?? null, active ? 1 : 0, req.params.id
+  const { name, position, class_year, archetype, dev_trait, jersey, active, redshirt } = req.body;
+  db.prepare('UPDATE players SET name=?, position=?, class_year=?, archetype=?, dev_trait=?, jersey=?, active=?, redshirt=? WHERE id=?').run(
+    name, position, class_year, archetype ?? null, dev_trait ?? null, jersey ?? null, active ? 1 : 0, redshirt ? 1 : 0, req.params.id
   );
   res.json(db.prepare('SELECT * FROM players WHERE id = ?').get(req.params.id));
 }));

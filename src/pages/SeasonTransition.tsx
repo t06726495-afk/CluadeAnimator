@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSeason } from '../App';
 import { get, post } from '../lib/api';
-import type { Player } from '../lib/types';
+import { classYearLabel, type Player } from '../lib/types';
 import TeamPicker from '../components/TeamPicker';
 
 type ScheduleRow = { week: number; opponent: string; home: boolean };
@@ -94,7 +94,7 @@ export default function SeasonTransition() {
                 />
                 <span style={{ width: 30, color: 'var(--muted)' }}>{p.position}</span>
                 <span style={{ flex: 1, fontWeight: 600 }}>{p.name}</span>
-                <span className="badge">{p.class_year}</span>
+                <span className="badge">{classYearLabel(p)}</span>
               </label>
             ))}
             {!players.length && <p style={{ padding: 12, color: 'var(--muted)' }}>No active players on the roster.</p>}

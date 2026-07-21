@@ -55,6 +55,15 @@ export default function App() {
     reload();
   };
 
+  const resetDynasty = async () => {
+    if (!confirm(
+      'Permanently delete this entire dynasty?\n\nThis wipes every season, game, player, recruit, and import — there is no undo. Use "Export backup" first if you want to keep a copy.'
+    )) return;
+    await fetch('/api/dynasty', { method: 'DELETE' });
+    setDynasty(null);
+    setSeasons([]);
+  };
+
   if (!dynastyLoaded) return null;
 
   if (!dynasty) {
@@ -104,6 +113,14 @@ export default function App() {
                 </button>
               )}
             </div>
+
+            <button
+              className="btn sm danger"
+              style={{ marginTop: 14, opacity: 0.6, background: 'transparent' }}
+              onClick={resetDynasty}
+            >
+              Reset dynasty…
+            </button>
           </div>
         </aside>
         <main className="main">

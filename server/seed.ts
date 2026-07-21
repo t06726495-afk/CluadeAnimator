@@ -41,6 +41,8 @@ const pid: Record<string, number> = {};
 for (const [name, pos, cls, arch, dev, jersey] of roster) {
   pid[name] = Number(insertPlayer.run(name, pos, cls, arch, dev, jersey).lastInsertRowid);
 }
+// A couple of redshirts, to demo the (RS) tag.
+db.prepare('UPDATE players SET redshirt = 1 WHERE id IN (?, ?)').run(pid['Isaiah Brooks'], pid['Trey Whitlock']);
 
 // ---- games (10 played + 2 upcoming) ----
 type G = [number, string, number, number | null, number | null];

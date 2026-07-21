@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { del, get, post, put } from '../lib/api';
-import { POSITIONS, type Player } from '../lib/types';
+import { POSITIONS, classYearLabel, type Player } from '../lib/types';
 import { ARCHETYPES_BY_POSITION } from '../lib/teams';
 
-const empty = { name: '', position: 'QB', class_year: 'FR', archetype: '', dev_trait: '', jersey: '' };
+const empty = { name: '', position: 'QB', class_year: 'FR', archetype: '', dev_trait: '', jersey: '', redshirt: false };
 
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -20,7 +20,7 @@ export default function PlayersPage() {
       const body = {
         name: form.name, position: form.position, class_year: form.class_year,
         archetype: form.archetype || null, dev_trait: form.dev_trait || null,
-        jersey: form.jersey === '' ? null : Number(form.jersey), active: true,
+        jersey: form.jersey === '' ? null : Number(form.jersey), active: true, redshirt: form.redshirt,
       };
       if (editing) await put(`/api/players/${editing}`, body);
       else await post('/api/players', body);
@@ -60,6 +60,10 @@ export default function PlayersPage() {
               {['FR', 'SO', 'JR', 'SR'].map((c) => <option key={c}>{c}</option>)}
             </select>
           </label>
+          <label className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 16 }}>
+            <input type="checkbox" checked={form.redshirt} onChange={(e) => setForm({ ...form, redshirt: e.target.checked })} />
+            Redshirt
+          </label>
           <label className="field">Archetype
             <select value={form.archetype} onChange={(e) => setForm({ ...form, archetype: e.target.value })}>
               {archetypeOptions.map((a) => <option key={a}>{a}</option>)}
@@ -88,7 +92,7 @@ export default function PlayersPage() {
                 <td style={{ color: 'var(--muted)' }}>{p.jersey ?? ''}</td>
                 <td><Link to={`/players/${p.id}`} style={{ fontWeight: 600 }}>{p.name}</Link></td>
                 <td>{p.position}</td>
-                <td>{p.class_year}</td>
+                <td>{classYearLabel(p)}</td>
                 <td style={{ color: 'var(--text-2)' }}>{p.archetype}</td>
                 <td>{p.dev_trait && <span className={`badge${p.dev_trait === 'Star' ? ' gold' : ''}`}>{p.dev_trait}</span>}</td>
                 <td className="num">
@@ -99,7 +103,7 @@ export default function PlayersPage() {
                       setForm({
                         name: p.name, position: p.position, class_year: p.class_year,
                         archetype: p.archetype ?? '', dev_trait: p.dev_trait ?? '',
-                        jersey: p.jersey == null ? '' : String(p.jersey),
+                        jersey: p.jersey == null ? '' : String(p.jersey), redshirt: !!p.redshirt,
                       });
                     }}
                   >Edit</button>{' '}

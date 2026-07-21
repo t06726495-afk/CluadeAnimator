@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently -n api,web -c red,blue \"tsx watch server/index.ts\" \"vite\"",
     "seed": "tsx server/seed.ts",
+    "reset": "tsx server/reset.ts",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b"
   },
