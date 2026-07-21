@@ -17,16 +17,27 @@ The API key lives only in `.env` and is only ever read by the Express backend. I
 
 All data lives in a single SQLite file at `data/dynasty.db` (created automatically). No cloud, no auth. **Export backup** in the sidebar downloads the whole database as JSON.
 
+## Starting your dynasty
+
+The very first time you open the app (empty database, no `npm run seed`), you land on a **Start Season** screen instead of a dashboard:
+
+1. Pick your team — start typing and any FBS school autocompletes (e.g. "No" → Notre Dame). Your school's colors become the app's accent color everywhere, replacing the default cardinal.
+2. Lay in your full schedule for the season — opponent (autocomplete again) and home/away for each week. You can always add, edit, or fix a game later on the Games page.
+
+Your first season is always year **2026**. From then on the sidebar footer shows a strip of every season you've played (click any year to go look at it) and, once you're viewing the current season, a **Next season →** button.
+
 ## Per-episode workflow
 
 1. **Play your week** in CFB 27. Photograph the screens you care about on your TV: the box score, the player stats tables, standings/poll, your recruiting board. Angle and glare are fine — the extractor is prompted for TV photos.
 2. **Import Stats** → pick the game (or week) the batch belongs to → drop all the photos at once. Each photo is classified (which screen is it?) and then extracted with a screen-specific prompt. Unreadable photos are flagged plainly — retake them straighter/closer.
 3. **Review** each import: the photo sits on the left, the extracted values in editable tables on the right. Yellow rows were flagged low-confidence by the model — double-check those. Player names are fuzzy-matched against your roster; near-misses show a one-click "Use ⟨existing player⟩" suggestion so OCR typos don't create duplicates. Nothing touches the database until you hit **Confirm & Save**. (The raw extraction JSON is kept on the import forever, so a mis-confirm never loses data.)
-4. **Recruiting**: update statuses on the board (status changes with a week set become timeline events automatically — your storyline beats), and hit **Snapshot** on the class-rank chart each week so the line grows over the season.
+4. **Recruiting**: update statuses on the board (status changes with a week set become timeline events automatically — your storyline beats). Competing schools autocomplete the same way as the team picker, and archetype options narrow to whatever's valid for the position you picked.
 5. **Record**: hit **🎥 Stream mode** in the sidebar — nav chrome disappears and fonts bump up for capture. `Exit stream mode` is the faint button top-right.
-6. **Offseason**: Players → **Offseason rollover** archives the season, bumps every class year, prompts you about graduating seniors, promotes committed/signed recruits onto the roster as freshmen, and starts the next season.
+6. **Offseason** — click **Next season →** at the bottom of the sidebar (only shown while viewing your current season):
+   - **Who stayed?** — every active player, checked by default to return; seniors start unchecked (graduating). Uncheck anyone else who transferred out or left early. Everyone still checked gets bumped a class year, and any committed/signed recruits join the roster as freshmen.
+   - **Next year's schedule** — same schedule builder as the start screen, for the upcoming season.
 
-Every number in the app is editable after the fact — click a stat cell on a player page to fix it, or edit games/players/recruits inline.
+Every number in the app is editable after the fact — click a stat cell on a player page to fix it, or edit games/players/recruits inline. Player overall ratings are tracked **year over year** (development page chart), matching how the game actually progresses players in the offseason rather than week to week.
 
 ## What imports where
 

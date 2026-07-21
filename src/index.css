@@ -288,6 +288,51 @@ tr.low-conf td { background: var(--low-conf-bg); }
 
 .star { color: var(--gold); letter-spacing: 1px; }
 
+/* ---------- team autocomplete ---------- */
+.team-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; min-width: 200px; max-height: 240px;
+  overflow-y: auto; background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: 8px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5); z-index: 40;
+}
+.team-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 13px; cursor: pointer; }
+.team-option.active, .team-option:hover { background: var(--surface-2); }
+.team-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+
+/* ---------- start dynasty screen ---------- */
+.start-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+.start-card { width: 100%; max-width: 620px; }
+.start-logo { font-size: 30px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+.start-logo span { color: var(--accent-bright); }
+.start-sub { text-align: center; color: var(--text-2); margin-bottom: 28px; }
+.team-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+.picked-team-banner {
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px;
+  border: 1px solid var(--border); margin-top: 12px;
+}
+.picked-team-banner .team-swatch { width: 18px; height: 18px; border-radius: 5px; }
+.schedule-builder-row { display: grid; grid-template-columns: 60px 1fr 90px 70px 32px; gap: 8px; align-items: center; margin-bottom: 6px; }
+.schedule-builder-row input, .schedule-builder-row select { width: 100%; }
+.step-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+.step-dot.active { background: var(--accent-bright); }
+
+/* ---------- season strip ---------- */
+.season-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+.season-chip {
+  padding: 4px 9px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: var(--text-2);
+}
+.season-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ---------- roster review (season transition) ---------- */
+.roster-review-list { max-height: 50vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+.roster-review-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.roster-review-row:last-child { border-bottom: none; }
+.roster-review-row.leaving { opacity: 0.5; }
+
 .timeline { display: flex; flex-direction: column; gap: 0; }
 .timeline-item { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
 .timeline-item:last-child { border-bottom: none; }

@@ -5,12 +5,18 @@ import { db } from './db.js';
 const tables = [
   'imports', 'position_needs', 'events', 'class_rank_snapshots', 'recruit_snapshots', 'recruits',
   'standings_snapshots', 'team_game_stats', 'player_rating_snapshots', 'player_game_stats',
-  'players', 'games', 'seasons',
+  'players', 'games', 'seasons', 'dynasty',
 ];
 for (const t of tables) db.prepare(`DELETE FROM ${t}`).run();
 
-const season = db.prepare("INSERT INTO seasons (year, name, active) VALUES (2027, '2027 Season', 1)").run();
-const seasonId = Number(season.lastInsertRowid);
+db.prepare('INSERT INTO dynasty (id, team_name, primary_color, secondary_color) VALUES (1, ?, ?, ?)').run('Stanford', '#8c1515', '#ffffff');
+
+// Two archived prior seasons (backfilled purely to demo the year-over-year
+// rating chart and season-strip navigation) plus the current 2026 season —
+// a fresh real dynasty always starts at 2026 with no history.
+const season2024 = Number(db.prepare("INSERT INTO seasons (year, name, active, archived) VALUES (2024, '2024 Season', 0, 1)").run().lastInsertRowid);
+const season2025 = Number(db.prepare("INSERT INTO seasons (year, name, active, archived) VALUES (2025, '2025 Season', 0, 1)").run().lastInsertRowid);
+const seasonId = Number(db.prepare("INSERT INTO seasons (year, name, active) VALUES (2026, '2026 Season', 1)").run().lastInsertRowid);
 
 // ---- roster ----
 const roster: Array<[string, string, string, string, string, number]> = [
@@ -107,7 +113,7 @@ for (const [week, , , us] of games) {
   }));
 }
 
-// ---- rating snapshots (weeks 0, 6, 12 → growth chart) ----
+// ---- rating snapshots (one per season, 2024 -> 2025 -> 2026 -> growth chart) ----
 const baseline: Array<[string, number, Record<string, number>]> = [
   ['Caleb Whitfield', 88, { THP: 91, SAC: 90, MAC: 87, SPD: 78 }],
   ['Marcus Delane', 84, { SPD: 92, AGI: 93, BCV: 85, CAR: 82 }],
@@ -119,12 +125,13 @@ const baseline: Array<[string, number, Record<string, number>]> = [
   ['Trey Whitlock', 76, { SPD: 90, MCV: 78, ZCV: 79, PRS: 74 }],
 ];
 const insertRating = db.prepare('INSERT INTO player_rating_snapshots (player_id, season_id, week, overall, attributes) VALUES (?, ?, ?, ?, ?)');
+const seasonsForRatings = [season2024, season2025, seasonId];
 for (const [name, ovr, attrs] of baseline) {
   const growth = ['FR', 'SO'].includes(roster.find((r) => r[0] === name)![2]) ? 3 : 1;
-  for (const [i, week] of [0, 6, 12].entries()) {
+  for (const [i, sid] of seasonsForRatings.entries()) {
     const bumped: Record<string, number> = {};
     for (const [k, v] of Object.entries(attrs)) bumped[k] = Math.min(99, v + i * growth + (i && Math.random() > 0.6 ? 1 : 0));
-    insertRating.run(pid[name], seasonId, week, Math.min(99, ovr + i * growth), JSON.stringify(bumped));
+    insertRating.run(pid[name], sid, 1, Math.min(99, ovr + i * growth), JSON.stringify(bumped));
   }
 }
 
@@ -169,11 +176,6 @@ for (const week of [2, 4, 6, 8, 10]) {
     insertRecruitSnap.run(rid[name], week, week < 6 ? 'offered' : status, natl + rand(-8, 8), Math.max(0, hours - (10 - week)));
   }
 }
-const insertClassRank = db.prepare('INSERT INTO class_rank_snapshots (season_id, week, rank, commit_count) VALUES (?, ?, ?, ?)');
-for (const [week, rank, commits] of [[1, 38, 0], [2, 31, 1], [4, 24, 1], [6, 19, 2], [8, 15, 3], [10, 11, 3]] as const) {
-  insertClassRank.run(seasonId, week, rank, commits);
-}
-
 // ---- timeline events ----
 const eventRows: Array<[number, string, string]> = [
   [2, 'commit', '5★ QB Jaxon Rivers committed'],
@@ -191,4 +193,4 @@ for (const [posn, target] of [['QB', 1], ['RB', 1], ['WR', 2], ['OT', 1], ['IOL'
   db.prepare('INSERT INTO position_needs (season_id, position, target_count) VALUES (?, ?, ?)').run(seasonId, posn, target);
 }
 
-console.log(`Seeded 2027 demo season (season_id=${seasonId}): ${roster.length} players, ${games.length} games, ${recruitRows.length} recruits.`);
+console.log(`Seeded Stanford dynasty, 2026 season (season_id=${seasonId}), with 2024-25 history: ${roster.length} players, ${games.length} games, ${recruitRows.length} recruits.`);

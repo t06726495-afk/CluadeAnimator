@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSeason } from '../App';
 import { del, get, post, put } from '../lib/api';
-import { POSITIONS, RECRUIT_STATUSES, type ClassRankSnapshot, type DynastyEvent, type PositionNeed, type Recruit } from '../lib/types';
-import { SeriesChart, CHART } from '../components/charts';
+import { POSITIONS, RECRUIT_STATUSES, type DynastyEvent, type PositionNeed, type Recruit } from '../lib/types';
+import { ARCHETYPES_BY_POSITION } from '../lib/teams';
+import TeamPicker from '../components/TeamPicker';
 
 const emptyForm = {
   name: '', position: 'QB', stars: '4', national_rank: '', position_rank: '', state: '',
@@ -12,20 +13,17 @@ const emptyForm = {
 export default function RecruitingPage() {
   const { season } = useSeason();
   const [recruits, setRecruits] = useState<Recruit[]>([]);
-  const [classRanks, setClassRanks] = useState<ClassRankSnapshot[]>([]);
   const [events, setEvents] = useState<DynastyEvent[]>([]);
   const [needs, setNeeds] = useState<PositionNeed[]>([]);
   const [form, setForm] = useState({ ...emptyForm });
   const [editing, setEditing] = useState<number | null>(null);
   const [statusWeek, setStatusWeek] = useState('1');
-  const [rankForm, setRankForm] = useState({ week: '1', rank: '' });
   const [error, setError] = useState('');
 
   const reload = () => {
     if (!season) return;
     const q = `season_id=${season.id}`;
     get<Recruit[]>(`/api/recruits?${q}`).then(setRecruits).catch((e) => setError(e.message));
-    get<ClassRankSnapshot[]>(`/api/class-rank?${q}`).then(setClassRanks).catch(() => {});
     get<DynastyEvent[]>(`/api/events?${q}`).then(setEvents).catch(() => {});
     get<PositionNeed[]>(`/api/needs?${q}`).then(setNeeds).catch(() => {});
   };
@@ -41,6 +39,13 @@ export default function RecruitingPage() {
     ? (commits.reduce((s, r) => s + (r.stars ?? 0), 0) / commits.length).toFixed(2)
     : '—';
 
+  const archetypeOptions = ARCHETYPES_BY_POSITION[form.position] ?? [];
+
+  const setPosition = (position: string) => {
+    const options = ARCHETYPES_BY_POSITION[position] ?? [];
+    setForm({ ...form, position, archetype: options.includes(form.archetype) ? form.archetype : options[0] ?? '' });
+  };
+
   const submit = async () => {
     try {
       const body = {
@@ -49,7 +54,7 @@ export default function RecruitingPage() {
         national_rank: form.national_rank === '' ? null : Number(form.national_rank),
         position_rank: form.position_rank === '' ? null : Number(form.position_rank),
         state: form.state || null, archetype: form.archetype || null,
-        status: form.status, competitors: form.competitors || null,
+        status: form.status, competitors: form.competitors.replace(/,\s*$/, '') || null,
         hours_spent: form.hours_spent === '' ? null : Number(form.hours_spent),
         week: Number(statusWeek),
       };
@@ -61,15 +66,6 @@ export default function RecruitingPage() {
     } catch (e) {
       setError((e as Error).message);
     }
-  };
-
-  const saveRank = async () => {
-    await put('/api/class-rank', {
-      season_id: season?.id, week: Number(rankForm.week),
-      rank: rankForm.rank === '' ? null : Number(rankForm.rank), commit_count: commits.length,
-    });
-    setRankForm({ week: String(Number(rankForm.week) + 1), rank: '' });
-    reload();
   };
 
   const setNeed = async (position: string, target: number) => {
@@ -88,50 +84,31 @@ export default function RecruitingPage() {
       <p className="page-sub">{season?.name} class — {commits.length} commits · {starAvg}★ average</p>
       {error && <div className="error-box" style={{ marginBottom: 12 }}>{error}</div>}
 
-      <div className="grid grid-2" style={{ marginBottom: 16 }}>
-        <div className="card">
-          <div className="row" style={{ justifyContent: 'space-between' }}>
-            <h3 style={{ margin: 0 }}>Class ranking over time</h3>
-            <div className="row" style={{ gap: 6 }}>
-              <input type="number" placeholder="Wk" style={{ width: 56 }} value={rankForm.week} onChange={(e) => setRankForm({ ...rankForm, week: e.target.value })} />
-              <input type="number" placeholder="Rank" style={{ width: 70 }} value={rankForm.rank} onChange={(e) => setRankForm({ ...rankForm, rank: e.target.value })} />
-              <button className="btn sm" onClick={saveRank} disabled={rankForm.rank === ''}>Snapshot</button>
-            </div>
-          </div>
-          <SeriesChart
-            data={classRanks.map((c) => ({ week: c.week, rank: c.rank }))}
-            xKey="week" yKey="rank" name="Class rank" color={CHART.cardinal}
-            height={220} reversedY yDomain={[1, 'dataMax + 5']}
-          />
-          <p style={{ color: 'var(--muted)', fontSize: 11, margin: 0 }}>Lower is better — axis is flipped so climbing the rankings goes up.</p>
-        </div>
-
-        <div className="card">
-          <h3>Needs board</h3>
-          <div className="needs-grid">
-            {needs.map((n) => {
-              const filled = commits.filter((c) => c.position === n.position).length;
-              return (
-                <div key={n.id} className={`need-cell${filled >= n.target_count ? ' filled' : ''}`}>
-                  <div className="pos">{n.position}</div>
-                  <div className="count">
-                    {filled}<span className="of"> / {n.target_count}</span>
-                  </div>
-                  <div className="row" style={{ gap: 4 }}>
-                    <button className="btn sm" onClick={() => setNeed(n.position, Math.max(0, n.target_count - 1))}>−</button>
-                    <button className="btn sm" onClick={() => setNeed(n.position, n.target_count + 1)}>+</button>
-                  </div>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <h3>Needs board</h3>
+        <div className="needs-grid">
+          {needs.map((n) => {
+            const filled = commits.filter((c) => c.position === n.position).length;
+            return (
+              <div key={n.id} className={`need-cell${filled >= n.target_count ? ' filled' : ''}`}>
+                <div className="pos">{n.position}</div>
+                <div className="count">
+                  {filled}<span className="of"> / {n.target_count}</span>
                 </div>
-              );
-            })}
-          </div>
-          <div className="row" style={{ marginTop: 10 }}>
-            <select id="new-need-pos" defaultValue="QB">{POSITIONS.map((p) => <option key={p}>{p}</option>)}</select>
-            <button
-              className="btn sm"
-              onClick={() => setNeed((document.getElementById('new-need-pos') as HTMLSelectElement).value, 1)}
-            >+ Add position target</button>
-          </div>
+                <div className="row" style={{ gap: 4 }}>
+                  <button className="btn sm" onClick={() => setNeed(n.position, Math.max(0, n.target_count - 1))}>−</button>
+                  <button className="btn sm" onClick={() => setNeed(n.position, n.target_count + 1)}>+</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="row" style={{ marginTop: 10 }}>
+          <select id="new-need-pos" defaultValue="QB">{POSITIONS.map((p) => <option key={p}>{p}</option>)}</select>
+          <button
+            className="btn sm"
+            onClick={() => setNeed((document.getElementById('new-need-pos') as HTMLSelectElement).value, 1)}
+          >+ Add position target</button>
         </div>
       </div>
 
@@ -140,7 +117,7 @@ export default function RecruitingPage() {
         <div className="row">
           <label className="field">Name<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
           <label className="field">Pos
-            <select value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })}>{POSITIONS.map((p) => <option key={p}>{p}</option>)}</select>
+            <select value={form.position} onChange={(e) => setPosition(e.target.value)}>{POSITIONS.map((p) => <option key={p}>{p}</option>)}</select>
           </label>
           <label className="field">Stars
             <select value={form.stars} onChange={(e) => setForm({ ...form, stars: e.target.value })}>{[5, 4, 3, 2, 1].map((s) => <option key={s}>{s}</option>)}</select>
@@ -148,11 +125,17 @@ export default function RecruitingPage() {
           <label className="field">Natl rank<input type="number" style={{ width: 84 }} value={form.national_rank} onChange={(e) => setForm({ ...form, national_rank: e.target.value })} /></label>
           <label className="field">Pos rank<input type="number" style={{ width: 74 }} value={form.position_rank} onChange={(e) => setForm({ ...form, position_rank: e.target.value })} /></label>
           <label className="field">State<input style={{ width: 60 }} value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} /></label>
-          <label className="field">Archetype<input value={form.archetype} onChange={(e) => setForm({ ...form, archetype: e.target.value })} /></label>
+          <label className="field">Archetype
+            <select value={form.archetype} onChange={(e) => setForm({ ...form, archetype: e.target.value })}>
+              {archetypeOptions.map((a) => <option key={a}>{a}</option>)}
+            </select>
+          </label>
           <label className="field">Status
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>{RECRUIT_STATUSES.map((s) => <option key={s}>{s}</option>)}</select>
           </label>
-          <label className="field">Competing schools<input value={form.competitors} onChange={(e) => setForm({ ...form, competitors: e.target.value })} placeholder="Oregon, USC" /></label>
+          <label className="field">Competing schools
+            <TeamPicker multi value={form.competitors} onChange={(v) => setForm({ ...form, competitors: v })} placeholder="Start typing..." style={{ width: 200 }} />
+          </label>
           <label className="field">Hours<input type="number" style={{ width: 68 }} value={form.hours_spent} onChange={(e) => setForm({ ...form, hours_spent: e.target.value })} /></label>
           <label className="field">Week (for timeline)<input type="number" style={{ width: 60 }} value={statusWeek} onChange={(e) => setStatusWeek(e.target.value)} /></label>
           <button className="btn primary" onClick={submit} disabled={!form.name}>{editing ? 'Save' : 'Add'}</button>

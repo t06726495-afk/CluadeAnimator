@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSeason } from '../App';
 import { del, get, post, put } from '../lib/api';
 import type { Game } from '../lib/types';
+import TeamPicker from '../components/TeamPicker';
 
 const empty = { week: 1, opponent: '', home: true, our_score: '', opp_score: '' };
 
@@ -60,7 +61,7 @@ export default function GamesPage() {
             <input type="number" style={{ width: 70 }} value={form.week} onChange={(e) => setForm({ ...form, week: Number(e.target.value) })} />
           </label>
           <label className="field">Opponent
-            <input value={form.opponent} onChange={(e) => setForm({ ...form, opponent: e.target.value })} placeholder="Notre Dame" />
+            <TeamPicker value={form.opponent} onChange={(v) => setForm({ ...form, opponent: v })} placeholder="Notre Dame" style={{ width: 200 }} />
           </label>
           <label className="field">Site
             <select value={form.home ? 'home' : 'away'} onChange={(e) => setForm({ ...form, home: e.target.value === 'home' })}>

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { del, get, post, put } from '../lib/api';
 import { POSITIONS, type Player } from '../lib/types';
-import { useSeason } from '../App';
+import { ARCHETYPES_BY_POSITION } from '../lib/teams';
 
 const empty = { name: '', position: 'QB', class_year: 'FR', archetype: '', dev_trait: '', jersey: '' };
 
 export default function PlayersPage() {
-  const { season, reload: reloadSeasons } = useSeason();
   const [players, setPlayers] = useState<Player[]>([]);
   const [form, setForm] = useState({ ...empty });
   const [editing, setEditing] = useState<number | null>(null);
@@ -33,16 +32,10 @@ export default function PlayersPage() {
     }
   };
 
-  const rollover = async () => {
-    if (!season) return;
-    const seniors = players.filter((p) => p.class_year === 'SR');
-    const names = seniors.map((s) => s.name).join(', ') || 'none';
-    if (!confirm(
-      `Roll over ${season.name}?\n\nThis archives the season, bumps every class year, promotes committed/signed recruits to freshmen, and graduates these seniors:\n${names}`
-    )) return;
-    await post(`/api/seasons/${season.id}/rollover`, { graduate_player_ids: seniors.map((s) => s.id) });
-    reloadSeasons();
-    reload();
+  const archetypeOptions = ARCHETYPES_BY_POSITION[form.position] ?? [];
+  const setPosition = (position: string) => {
+    const options = ARCHETYPES_BY_POSITION[position] ?? [];
+    setForm({ ...form, position, archetype: options.includes(form.archetype) ? form.archetype : options[0] ?? '' });
   };
 
   return (
@@ -58,7 +51,7 @@ export default function PlayersPage() {
             <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </label>
           <label className="field">Pos
-            <select value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })}>
+            <select value={form.position} onChange={(e) => setPosition(e.target.value)}>
               {POSITIONS.map((p) => <option key={p}>{p}</option>)}
             </select>
           </label>
@@ -68,7 +61,9 @@ export default function PlayersPage() {
             </select>
           </label>
           <label className="field">Archetype
-            <input value={form.archetype} onChange={(e) => setForm({ ...form, archetype: e.target.value })} />
+            <select value={form.archetype} onChange={(e) => setForm({ ...form, archetype: e.target.value })}>
+              {archetypeOptions.map((a) => <option key={a}>{a}</option>)}
+            </select>
           </label>
           <label className="field">Dev trait
             <input value={form.dev_trait} onChange={(e) => setForm({ ...form, dev_trait: e.target.value })} placeholder="Star / Impact / Normal" />
@@ -82,10 +77,7 @@ export default function PlayersPage() {
       </div>
 
       <div className="card">
-        <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
-          <h3 style={{ margin: 0 }}>Active roster ({players.length})</h3>
-          <button className="btn" onClick={rollover}>Offseason rollover…</button>
-        </div>
+        <h3>Active roster ({players.length})</h3>
         <table>
           <thead>
             <tr><th>#</th><th>Name</th><th>Pos</th><th>Class</th><th>Archetype</th><th>Dev</th><th></th></tr>

@@ -1,4 +1,5 @@
 export type Season = { id: number; year: number; name: string; active: number; archived: number };
+export type Dynasty = { id: number; team_name: string; primary_color: string; secondary_color: string; created_at: string };
 export type Game = {
   id: number; season_id: number; week: number; opponent: string; home: number;
   our_score: number | null; opp_score: number | null; result: 'W' | 'L' | 'T' | null; notes: string | null;
@@ -13,7 +14,7 @@ export type PlayerGameStat = {
 };
 export type RatingSnapshot = {
   id: number; player_id: number; season_id: number; week: number; overall: number | null;
-  attributes: Record<string, number>;
+  attributes: Record<string, number>; season_year?: number;
 };
 export type Recruit = {
   id: number; season_id: number; name: string; position: string; stars: number | null;
@@ -21,7 +22,6 @@ export type Recruit = {
   archetype: string | null; dev_trait: string | null; status: string;
   competitors: string | null; hours_spent: number | null; notes: string | null;
 };
-export type ClassRankSnapshot = { id: number; season_id: number; week: number; rank: number | null; commit_count: number | null };
 export type DynastyEvent = { id: number; season_id: number; week: number; type: string; description: string };
 export type PositionNeed = { id: number; season_id: number; position: string; target_count: number };
 export type StandingsSnapshot = {
@@ -43,7 +43,7 @@ export type Dashboard = {
     score: number; avg: number; latest: number; games: number; trend: 'up' | 'down' | 'flat'; key_line: string;
   }>;
   standings: { current: StandingsSnapshot | null; previous: StandingsSnapshot | null };
-  recruiting: { class_rank: number | null; commit_count: number; star_avg: number | null; latest_commit: string | null };
+  recruiting: { commit_count: number; star_avg: number | null; latest_commit: string | null };
 };
 
 export const RECRUIT_STATUSES = ['scouting', 'offered', 'top 5', 'committed', 'signed', 'lost'] as const;

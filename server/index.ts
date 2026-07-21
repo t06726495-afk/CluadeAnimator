@@ -34,18 +34,50 @@ const asyncRoute =
     }
   };
 
+// ---------- dynasty ----------
+
+app.get('/api/dynasty', (_req, res) => {
+  res.json(db.prepare('SELECT * FROM dynasty WHERE id = 1').get() ?? null);
+});
+
+// Starts the dynasty: pick a team + colors, create the first season (2026),
+// and optionally lay in the full first-season schedule in one shot.
+app.post('/api/dynasty', asyncRoute((req, res) => {
+  if (db.prepare('SELECT id FROM dynasty WHERE id = 1').get()) {
+    throw new Error('A dynasty already exists.');
+  }
+  const { team_name, primary_color, secondary_color, schedule } = req.body;
+  if (!team_name) throw new Error('team_name is required');
+  const tx = db.transaction(() => {
+    db.prepare('INSERT INTO dynasty (id, team_name, primary_color, secondary_color) VALUES (1, ?, ?, ?)').run(
+      team_name, primary_color || '#8c1515', secondary_color || '#ffffff'
+    );
+    const seasonInfo = db.prepare('INSERT INTO seasons (year, name, active) VALUES (2026, ?, 1)').run('2026 Season');
+    const seasonId = Number(seasonInfo.lastInsertRowid);
+    const insertGame = db.prepare('INSERT INTO games (season_id, week, opponent, home) VALUES (?, ?, ?, ?)');
+    for (const g of (schedule ?? []) as Array<{ week: number; opponent: string; home: boolean }>) {
+      if (!g.opponent) continue;
+      insertGame.run(seasonId, g.week, g.opponent, g.home ? 1 : 0);
+    }
+    return seasonId;
+  });
+  tx();
+  res.json(db.prepare('SELECT * FROM dynasty WHERE id = 1').get());
+}));
+
+app.put('/api/dynasty', asyncRoute((req, res) => {
+  const { team_name, primary_color, secondary_color } = req.body;
+  db.prepare('UPDATE dynasty SET team_name = ?, primary_color = ?, secondary_color = ? WHERE id = 1').run(
+    team_name, primary_color, secondary_color
+  );
+  res.json(db.prepare('SELECT * FROM dynasty WHERE id = 1').get());
+}));
+
 // ---------- seasons ----------
 
 app.get('/api/seasons', (_req, res) => {
   res.json(db.prepare('SELECT * FROM seasons ORDER BY year DESC').all());
 });
-
-app.post('/api/seasons', asyncRoute((req, res) => {
-  const { year, name } = req.body;
-  db.prepare('UPDATE seasons SET active = 0').run();
-  const info = db.prepare('INSERT INTO seasons (year, name, active) VALUES (?, ?, 1)').run(year, name || `${year} Season`);
-  res.json(db.prepare('SELECT * FROM seasons WHERE id = ?').get(info.lastInsertRowid));
-}));
 
 app.post('/api/seasons/:id/activate', asyncRoute((req, res) => {
   db.prepare('UPDATE seasons SET active = 0').run();
@@ -53,15 +85,35 @@ app.post('/api/seasons/:id/activate', asyncRoute((req, res) => {
   res.json({ ok: true });
 }));
 
-// Offseason rollover: archive the season, bump class years, graduate seniors
-// the user selected, and start the next season.
+// Bulk-add games to a season — used by the schedule builder at the start of
+// each season (initial dynasty setup and every "Next Season" transition).
+app.post('/api/games/bulk', asyncRoute((req, res) => {
+  const { season_id, games } = req.body as { season_id: number; games: Array<{ week: number; opponent: string; home: boolean }> };
+  if (!season_id) throw new Error('season_id is required');
+  const insert = db.prepare('INSERT INTO games (season_id, week, opponent, home) VALUES (?, ?, ?, ?)');
+  const tx = db.transaction(() => {
+    let count = 0;
+    for (const g of games ?? []) {
+      if (!g.opponent) continue;
+      insert.run(season_id, g.week, g.opponent, g.home ? 1 : 0);
+      count++;
+    }
+    return count;
+  });
+  res.json({ ok: true, created: tx() });
+}));
+
+// Offseason rollover: archive the finished season, deactivate anyone who
+// didn't return (drafted early, transferred out, graduated), bump everyone
+// else's class year, promote signed recruits to freshmen, and open the next
+// season (year + 1).
 app.post('/api/seasons/:id/rollover', asyncRoute((req, res) => {
   const season = db.prepare('SELECT * FROM seasons WHERE id = ?').get(req.params.id) as any;
   if (!season) throw new Error('Season not found');
-  const graduateIds: number[] = req.body?.graduate_player_ids ?? [];
+  const departedIds: number[] = req.body?.departed_player_ids ?? [];
   const tx = db.transaction(() => {
     db.prepare('UPDATE seasons SET active = 0, archived = 1 WHERE id = ?').run(season.id);
-    for (const id of graduateIds) db.prepare("UPDATE players SET active = 0 WHERE id = ?").run(id);
+    for (const id of departedIds) db.prepare('UPDATE players SET active = 0 WHERE id = ?').run(id);
     db.prepare("UPDATE players SET class_year = 'SR' WHERE active = 1 AND class_year = 'JR'").run();
     db.prepare("UPDATE players SET class_year = 'JR' WHERE active = 1 AND class_year = 'SO'").run();
     db.prepare("UPDATE players SET class_year = 'SO' WHERE active = 1 AND class_year = 'FR'").run();
@@ -78,7 +130,7 @@ app.post('/api/seasons/:id/rollover', asyncRoute((req, res) => {
     return { newSeasonId: Number(info.lastInsertRowid), promoted: signed.length };
   });
   const out = tx();
-  res.json({ ok: true, ...out, graduated: graduateIds.length });
+  res.json({ ok: true, ...out, departed: departedIds.length });
 }));
 
 // ---------- games ----------
@@ -175,9 +227,20 @@ app.get('/api/players/:id/detail', asyncRoute((req, res) => {
        JOIN games g ON g.id = pgs.game_id WHERE pgs.player_id = ? ORDER BY g.season_id, g.week`
     )
     .all(req.params.id) as any[];
+  // Ratings jump between seasons (offseason progression), not week to week —
+  // collapse to one representative snapshot per season (the latest one
+  // entered that season) so the growth chart reads year over year.
   const ratings = db
-    .prepare('SELECT * FROM player_rating_snapshots WHERE player_id = ? ORDER BY season_id, week')
-    .all(req.params.id) as any[];
+    .prepare(
+      `SELECT prs.*, s.year AS season_year FROM player_rating_snapshots prs
+       JOIN seasons s ON s.id = prs.season_id
+       INNER JOIN (
+         SELECT season_id, MAX(week) AS max_week FROM player_rating_snapshots
+         WHERE player_id = ? GROUP BY season_id
+       ) latest ON latest.season_id = prs.season_id AND latest.max_week = prs.week
+       WHERE prs.player_id = ? ORDER BY s.year`
+    )
+    .all(req.params.id, req.params.id) as any[];
   res.json({
     player,
     stats: stats.map((r) => ({ ...r, stats: JSON.parse(r.stats) })),
@@ -256,20 +319,6 @@ app.delete('/api/recruits/:id', (req, res) => {
   db.prepare('DELETE FROM recruits WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
-
-app.get('/api/class-rank', (req, res) => {
-  const seasonId = Number(req.query.season_id) || activeSeasonId();
-  res.json(db.prepare('SELECT * FROM class_rank_snapshots WHERE season_id = ? ORDER BY week').all(seasonId));
-});
-
-app.put('/api/class-rank', asyncRoute((req, res) => {
-  const { season_id, week, rank, commit_count } = req.body;
-  db.prepare(
-    `INSERT INTO class_rank_snapshots (season_id, week, rank, commit_count) VALUES (?, ?, ?, ?)
-     ON CONFLICT(season_id, week) DO UPDATE SET rank = excluded.rank, commit_count = excluded.commit_count`
-  ).run(season_id ?? activeSeasonId(), week, rank ?? null, commit_count ?? null);
-  res.json({ ok: true });
-}));
 
 app.get('/api/events', (req, res) => {
   const seasonId = Number(req.query.season_id) || activeSeasonId();
@@ -377,9 +426,6 @@ app.get('/api/dashboard', asyncRoute((req, res) => {
 
   const recruits = db.prepare('SELECT * FROM recruits WHERE season_id = ?').all(seasonId) as any[];
   const commits = recruits.filter((r) => r.status === 'committed' || r.status === 'signed');
-  const classRank = db
-    .prepare('SELECT * FROM class_rank_snapshots WHERE season_id = ? ORDER BY week DESC LIMIT 1')
-    .get(seasonId) as any;
   const latestCommitEvent = db
     .prepare("SELECT * FROM events WHERE season_id = ? AND type IN ('commit','signed') ORDER BY week DESC, id DESC LIMIT 1")
     .get(seasonId) as any;
@@ -391,7 +437,6 @@ app.get('/api/dashboard', asyncRoute((req, res) => {
     performers,
     standings: { current: standings[0] ?? null, previous: standings[1] ?? null },
     recruiting: {
-      class_rank: classRank?.rank ?? null,
       commit_count: commits.length,
       star_avg: commits.length ? Math.round((commits.reduce((s, r) => s + (r.stars ?? 0), 0) / commits.length) * 100) / 100 : null,
       latest_commit: latestCommitEvent?.description ?? null,

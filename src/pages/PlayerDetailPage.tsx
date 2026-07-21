@@ -78,12 +78,12 @@ export default function PlayerDetailPage() {
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <h3 style={{ margin: 0 }}>Overall rating over time</h3>
-            {ovrDelta != null && ovrDelta > 0 && <span className="badge win">+{ovrDelta} OVR this season</span>}
+            {ovrDelta != null && ovrDelta > 0 && <span className="badge win">+{ovrDelta} OVR since {ratings[0]?.season_year ?? ''}</span>}
           </div>
           <SeriesChart
-            data={ratings.map((r) => ({ week: r.week, overall: r.overall }))}
-            xKey="week" yKey="overall" name="Overall" height={200}
-            yDomain={['dataMin - 2', 'dataMax + 2']}
+            data={ratings.map((r) => ({ year: r.season_year ?? r.season_id, overall: r.overall }))}
+            xKey="year" yKey="overall" name="Overall" height={200}
+            yDomain={['dataMin - 2', 'dataMax + 2']} xLabel="Year"
           />
           {growth.length > 0 && (
             <div style={{ marginTop: 8 }}>

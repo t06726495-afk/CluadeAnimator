@@ -151,10 +151,6 @@ export default function Dashboard() {
           <h3>Recruiting class</h3>
           <div className="row" style={{ gap: 32 }}>
             <div className="stat-tile">
-              <div className="value">{data.recruiting.class_rank ? `#${data.recruiting.class_rank}` : '—'}</div>
-              <div className="label">Class rank</div>
-            </div>
-            <div className="stat-tile">
               <div className="value">{data.recruiting.commit_count}</div>
               <div className="label">Commits</div>
             </div>

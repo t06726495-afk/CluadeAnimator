@@ -11,6 +11,13 @@ db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
 db.exec(`
+CREATE TABLE IF NOT EXISTS dynasty (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  team_name TEXT NOT NULL,
+  primary_color TEXT NOT NULL,
+  secondary_color TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
 CREATE TABLE IF NOT EXISTS seasons (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   year INTEGER NOT NULL,
