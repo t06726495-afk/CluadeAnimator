@@ -1,0 +1,38 @@
+{
+  "name": "dynasty-tracker",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n api,web -c red,blue \"tsx watch server/index.ts\" \"vite\"",
+    "seed": "tsx server/seed.ts",
+    "reset": "tsx server/reset.ts",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.65.0",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.15.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.14",
+    "@types/react-dom": "^18.3.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}
