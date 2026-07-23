@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f8f6;
+  --surface: #ffffff;
+  --foreground: #101418;
+  --muted: #4b5563;
+  --border: #d7dbe0;
+  --primary: #1d6b3f;
+  --primary-foreground: #ffffff;
+  --accent: #0b4d8f;
+  --danger: #b3261e;
+  --warning: #a15c00;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e1210;
+    --surface: #171c19;
+    --foreground: #f2f4f2;
+    --muted: #a7b0a9;
+    --border: #2e3632;
+    --primary: #3fbf76;
+    --primary-foreground: #06210f;
+    --accent: #5fa8e8;
+    --danger: #ff6b60;
+    --warning: #ffb648;
+  }
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}

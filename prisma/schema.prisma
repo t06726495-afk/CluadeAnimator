@@ -1,0 +1,148 @@
+// DiamondPlan data model.
+// SQLite has no native enum type, so all enum-like fields are String columns.
+// Allowed values are defined once in lib/constants/enums.ts and validated with zod
+// at every Server Action boundary. This also makes a future Postgres migration
+// low-friction, since no native-enum migration ceremony is involved.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  plan         String   @default("free") // "free" | "paid"
+  planInterval String? // "monthly" | "yearly", set on mock upgrade
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  teams    Team[]
+  sessions Session[]
+  drills   Drill[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Team {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  ageRange   String // TeamAgeRange: "6U" | "8U" | "9U-10U" | "10U" | "12U" | "14U"
+  skillLevel String // SkillLevel: "new" | "intermediate" | "competitive"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practices Practice[]
+
+  @@index([userId])
+  @@map("teams")
+}
+
+model Practice {
+  id                   String   @id @default(cuid())
+  teamId               String
+  title                String   @default("Practice")
+  date                 DateTime
+  totalDurationMinutes Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  blocks Block[]
+
+  @@index([teamId])
+  @@map("practices")
+}
+
+model Block {
+  id              String  @id @default(cuid())
+  practiceId      String
+  category        String // BlockCategory: "warm-up" | "hitting" | "defense" | "pitching" | "mixed"
+  durationMinutes Int
+  order           Int
+  coachNotes      String?
+
+  practice   Practice                 @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  selections PracticeDrillSelection[]
+
+  @@index([practiceId, order])
+  @@map("blocks")
+}
+
+model Drill {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  category     String // BlockCategory
+  description  String
+  coachingCues String
+  equipment    String
+  ownerUserId  String? // null = global seeded library drill; set = coach's custom drill
+
+  owner      User?                    @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  ageTiers   DrillAgeTier[]
+  skillTags  DrillSkillLevel[]
+  selections PracticeDrillSelection[]
+
+  @@index([category])
+  @@index([ownerUserId])
+  @@map("drills")
+}
+
+model DrillAgeTier {
+  id      String @id @default(cuid())
+  drillId String
+  ageTier String // DrillAgeTier: "6U-8U" | "9U-10U" | "11U-12U" | "13U-14U"
+
+  drill Drill @relation(fields: [drillId], references: [id], onDelete: Cascade)
+
+  @@unique([drillId, ageTier])
+  @@index([ageTier])
+  @@map("drill_age_tiers")
+}
+
+model DrillSkillLevel {
+  id         String @id @default(cuid())
+  drillId    String
+  skillLevel String // SkillLevel
+
+  drill Drill @relation(fields: [drillId], references: [id], onDelete: Cascade)
+
+  @@unique([drillId, skillLevel])
+  @@index([skillLevel])
+  @@map("drill_skill_levels")
+}
+
+model PracticeDrillSelection {
+  id        String  @id @default(cuid())
+  blockId   String
+  drillId   String
+  order     Int
+  coachNote String?
+
+  block Block @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  drill Drill @relation(fields: [drillId], references: [id], onDelete: Restrict)
+
+  @@index([blockId, order])
+  @@map("practice_drill_selections")
+}
