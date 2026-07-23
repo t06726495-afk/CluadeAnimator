@@ -90,7 +90,7 @@ export function DrillPickerModal({
           {drills === null && <p className="text-muted text-sm">Loading suggestions...</p>}
           {drills && drills.length === 0 && (
             <p className="text-muted text-sm">
-              No more library drills for this category/age tier — try adding
+              No more library drills for this category/age tier. Try adding
               your own below.
             </p>
           )}

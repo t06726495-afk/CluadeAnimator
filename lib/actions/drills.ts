@@ -11,6 +11,7 @@ import {
 } from "@/lib/constants/enums";
 import type { TeamAgeRange, SkillLevel } from "@/lib/constants/enums";
 import { suggestDrillsForBlock } from "@/lib/drills/suggest";
+import { DIAGRAM_TYPES } from "@/lib/drills/diagramTypes";
 
 async function loadBlockContext(blockId: string, userId: string) {
   const block = await prisma.block.findUnique({
@@ -144,6 +145,7 @@ const customDrillSchema = z.object({
   description: z.string().trim().min(1).max(1000),
   coachingCues: z.string().trim().max(1000).optional().default(""),
   equipment: z.string().trim().max(300).optional().default(""),
+  diagramType: z.enum(DIAGRAM_TYPES).optional(),
 });
 
 export async function createCustomDrill(
@@ -166,6 +168,7 @@ export async function createCustomDrill(
       description: parsed.description,
       coachingCues: parsed.coachingCues,
       equipment: parsed.equipment,
+      diagramType: parsed.diagramType ?? null,
       ownerUserId: user.id,
       ageTiers: { create: parsed.ageTiers.map((ageTier) => ({ ageTier })) },
       skillTags: { create: parsed.skillLevels.map((skillLevel) => ({ skillLevel })) },

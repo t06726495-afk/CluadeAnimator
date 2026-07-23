@@ -8,6 +8,7 @@ export type BuilderDrill = {
   description: string;
   coachingCues: string;
   equipment: string;
+  diagramType: string | null;
   ownerUserId: string | null;
   ageTiers: string[];
   skillLevels: string[];

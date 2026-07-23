@@ -97,6 +97,7 @@ model Drill {
   description  String
   coachingCues String
   equipment    String
+  diagramType  String? // DiagramType key (see lib/drills/diagramTypes.ts), optional
   ownerUserId  String? // null = global seeded library drill; set = coach's custom drill
 
   owner      User?                    @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)

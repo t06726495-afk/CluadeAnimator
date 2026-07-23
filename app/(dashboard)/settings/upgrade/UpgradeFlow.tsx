@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { upgradeToPaid } from "@/lib/actions/billing";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
+import { Check } from "@phosphor-icons/react/dist/ssr/Check";
 import type { PlanInterval } from "@/lib/constants/enums";
 
 export function UpgradeFlow() {
@@ -43,10 +44,17 @@ export function UpgradeFlow() {
       <Card>
         <CardBody className="pt-4">
           <ul className="space-y-2 text-sm">
-            <li>✓ Unlimited teams</li>
-            <li>✓ Unlimited saved practice history</li>
-            <li>✓ Duplicate practices as templates</li>
-            <li>✓ PDF export for assistant coaches & parents</li>
+            {[
+              "Unlimited teams",
+              "Unlimited saved practice history",
+              "Duplicate practices as templates",
+              "PDF export for assistant coaches and parents",
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <Check size={16} weight="bold" className="shrink-0 text-primary" />
+                {item}
+              </li>
+            ))}
           </ul>
         </CardBody>
       </Card>
@@ -69,7 +77,7 @@ export function UpgradeFlow() {
           });
         }}
       >
-        {pending ? "Processing..." : `Upgrade — ${interval === "monthly" ? "$4.99/mo" : "$39.99/yr"}`}
+        {pending ? "Processing..." : `Upgrade, ${interval === "monthly" ? "$4.99/mo" : "$39.99/yr"}`}
       </Button>
       <p className="text-center text-xs text-muted">
         Demo mode: no payment is actually charged.

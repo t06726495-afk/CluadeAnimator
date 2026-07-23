@@ -128,7 +128,7 @@ export function PracticeBuilder({
           className="w-full shadow-lg"
           onClick={() => router.push(`/teams/${team.id}/practices/${practice.id}`)}
         >
-          Done — View Practice Summary →
+          View Practice Summary
         </Button>
       </div>
 

@@ -10,6 +10,9 @@ import { DrillPickerModal } from "@/components/drills/DrillPickerModal";
 import { SwapDrillButton } from "./SwapDrillButton";
 import { updateBlock } from "@/lib/actions/blocks";
 import { removeDrillFromBlock } from "@/lib/actions/drills";
+import { CaretUp } from "@phosphor-icons/react/dist/ssr/CaretUp";
+import { CaretDown } from "@phosphor-icons/react/dist/ssr/CaretDown";
+import { X } from "@phosphor-icons/react/dist/ssr/X";
 import type { BuilderBlock, TeamAgeRange } from "./types";
 
 export function BlockCard({
@@ -61,26 +64,26 @@ export function BlockCard({
               aria-label="Move up"
               disabled={isFirst}
               onClick={onMoveUp}
-              className="min-h-9 min-w-9 rounded-lg border-2 border-border disabled:opacity-30"
+              className="flex min-h-9 min-w-9 items-center justify-center rounded-lg border-2 border-border disabled:opacity-30"
             >
-              ▲
+              <CaretUp size={16} weight="bold" />
             </button>
             <button
               type="button"
               aria-label="Move down"
               disabled={isLast}
               onClick={onMoveDown}
-              className="min-h-9 min-w-9 rounded-lg border-2 border-border disabled:opacity-30"
+              className="flex min-h-9 min-w-9 items-center justify-center rounded-lg border-2 border-border disabled:opacity-30"
             >
-              ▼
+              <CaretDown size={16} weight="bold" />
             </button>
             <button
               type="button"
               aria-label="Remove block"
               onClick={onRemove}
-              className="min-h-9 min-w-9 rounded-lg border-2 border-danger text-danger"
+              className="flex min-h-9 min-w-9 items-center justify-center rounded-lg border-2 border-danger text-danger"
             >
-              ✕
+              <X size={16} weight="bold" />
             </button>
           </div>
         </div>

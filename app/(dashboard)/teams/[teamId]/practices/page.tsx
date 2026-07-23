@@ -25,7 +25,7 @@ export default async function PracticeHistoryPage({
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">{team.name} — Practice History</h1>
+      <h1 className="text-2xl font-extrabold">{team.name}: Practice History</h1>
 
       {team.practices.length === 0 ? (
         <Card>

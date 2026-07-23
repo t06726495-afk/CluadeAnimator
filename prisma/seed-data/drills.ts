@@ -3,6 +3,7 @@ import type {
   DrillAgeTier,
   SkillLevel,
 } from "@/lib/constants/enums";
+import type { DiagramType } from "@/lib/drills/diagramTypes";
 
 export type DrillSeedEntry = {
   slug: string;
@@ -13,6 +14,7 @@ export type DrillSeedEntry = {
   description: string;
   coachingCues: string;
   equipment: string;
+  diagramType?: DiagramType;
 };
 
 const ALL_SKILL_LEVELS: SkillLevel[] = ["new", "intermediate", "competitive"];
@@ -38,8 +40,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Light jog around the bases or between cones for 2-3 minutes, followed by big arm circles forward and backward. No static stretching.",
     coachingCues:
-      "Keep it playful and moving — no standing around. Arm circles should be big and loose, not held stretches. This age group does not need (and shouldn't do) static stretching before throwing.",
+      "Keep it playful and moving. No standing around. Arm circles should be big and loose, not held stretches. This age group does not need (and shouldn't do) static stretching before throwing.",
     equipment: "Cones or bases",
+    diagramType: "warmup-jog",
   },
   {
     slug: "warmup-6u8u-freeze-tag-toss",
@@ -50,8 +53,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Kids jog/shuffle in a group game of freeze tag for a couple minutes to get loose, then pair up for easy catch at 15 feet.",
     coachingCues:
-      "Keep throwing distance short (15 ft to start). Watch for tired arms — this is about getting loose and having fun, not building arm strength yet.",
+      "Keep throwing distance short (15 ft to start). Watch for tired arms. This is about getting loose and having fun, not building arm strength yet.",
     equipment: "Balls",
+    diagramType: "warmup-jog",
   },
   {
     slug: "warmup-6u8u-arm-circle-countdown",
@@ -62,8 +66,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Count down from 10 big arm circles forward, 10 backward, then move straight into partner toss starting at 15 ft and creeping back to 20 ft.",
     coachingCues:
-      "Make the countdown a group chant to keep energy up. Progress distance only if throws stay accurate — distance is secondary to a clean release.",
+      "Make the countdown a group chant to keep energy up. Progress distance only if throws stay accurate. Distance is secondary to a clean release.",
     equipment: "Balls",
+    diagramType: "warmup-jog",
   },
   {
     slug: "warmup-6u8u-bucket-base-jog",
@@ -74,8 +79,35 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Easy-pace jog around the bases (walk the last one if needed), then a short throwing game: partners toss and catch, taking one step back each time they complete 3 catches in a row.",
     coachingCues:
-      "This is a warm-up, not a fitness test — pace should stay easy and fun. Cap throwing distance around 20 ft for this age group.",
+      "This is a warm-up, not a fitness test. Pace should stay easy and fun. Cap throwing distance around 20 ft for this age group.",
     equipment: "Bases, balls",
+    diagramType: "warmup-jog",
+  },
+  {
+    slug: "warmup-6u8u-high-five-relay-jog",
+    name: "High Five Relay Jog",
+    category: "warm-up",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Jog in a loose line around the bases, high-fiving a coach or teammate at each base, then pair up for easy short-distance catch.",
+    coachingCues:
+      "Keep the pace light and social. The high fives are there to make the jog feel like a game, not a lap.",
+    equipment: "Bases, balls",
+    diagramType: "warmup-jog",
+  },
+  {
+    slug: "warmup-6u8u-cone-weave-jog",
+    name: "Cone Weave Jog",
+    category: "warm-up",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Light jog weaving through a line of cones, then partner toss starting at 15 ft.",
+    coachingCues:
+      "Weaving keeps it playful while still getting bodies moving. No static stretching before or after.",
+    equipment: "Cones, balls",
+    diagramType: "warmup-jog",
   },
   // Hitting
   {
@@ -87,8 +119,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Set the tee at three heights (low/thigh, middle/belt, high/chest) and have each hitter take 5 swings at each height before rotating.",
     coachingCues:
-      "High rep count is the goal — keep the line moving. Focus on 'squish the bug' back-foot rotation and swinging level to the tee height, not on mechanics perfection.",
+      "High rep count is the goal. Keep the line moving. Focus on 'squish the bug' back-foot rotation and swinging level to the tee height, not on mechanics perfection.",
     equipment: "Tee, bats, balls",
+    diagramType: "tee-multi",
   },
   {
     slug: "hitting-6u8u-bucket-derby",
@@ -101,6 +134,7 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     coachingCues:
       "Keep score light and fun, not competitive pressure. This is about high-rep contact with a game frame so kids want another turn.",
     equipment: "Tee, bats, balls, buckets or cones",
+    diagramType: "tee-single",
   },
   {
     slug: "hitting-6u8u-around-the-world-tee",
@@ -111,8 +145,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Move the tee to inside, middle, and outside plate positions. Hitters take a few swings from each position and try to hit the ball to a different field for each.",
     coachingCues:
-      "Simple cue: 'inside pitch goes that way, outside pitch goes that way' — pointing is fine at this age. Reward good tries, not just results.",
+      "Simple cue: 'inside pitch goes that way, outside pitch goes that way'. Pointing is fine at this age. Reward good tries, not just results.",
     equipment: "Tee, bats, balls",
+    diagramType: "tee-multi",
   },
   {
     slug: "hitting-6u8u-color-ball-challenge",
@@ -125,6 +160,7 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     coachingCues:
       "Keeps eyes locked on the ball and adds a fun twist to plain tee reps. High rep count, quick rotation.",
     equipment: "Tee, bats, colored or numbered balls",
+    diagramType: "tee-single",
   },
   {
     slug: "hitting-6u8u-intro-soft-toss",
@@ -135,8 +171,35 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "For hitters who have shown they're ready (late in this tier): coach or helper kneels close and tosses the ball gently underhand into the hitting zone toward a fence or net.",
     coachingCues:
-      "Only introduce lightly and only for kids showing tee-work consistency — this is not the main diet at this age. Keep tosses soft, close, and to the same spot every time.",
+      "Only introduce lightly and only for kids showing tee-work consistency. This is not the main diet at this age. Keep tosses soft, close, and to the same spot every time.",
     equipment: "Balls, net or fence backstop",
+    diagramType: "soft-toss",
+  },
+  {
+    slug: "hitting-6u8u-rainbow-tee-circuit",
+    name: "Rainbow Tee Circuit",
+    category: "hitting",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Set the tee at varying heights with colored target rings laid out in the field. Hitters try to land the ball inside a ring for points, high rep count.",
+    coachingCues:
+      "Keep the line moving fast. The goal is reps and fun, not precision. Celebrate any ball landing in a ring.",
+    equipment: "Tee, bats, balls, cones or rings",
+    diagramType: "tee-multi",
+  },
+  {
+    slug: "hitting-6u8u-home-run-derby",
+    name: "Tee Ball Home Run Derby",
+    category: "hitting",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Simple tee-hitting game where hitters score points based on which zone of the field the ball lands in, with a fun 'derby' framing.",
+    coachingCues:
+      "Keep it light and game-like. This is about excitement for hitting off the tee, not swing mechanics critique.",
+    equipment: "Tee, bats, balls, cones",
+    diagramType: "tee-single",
   },
   // Defense
   {
@@ -148,8 +211,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Coach rolls easy ground balls one at a time from short distance. Fielders use two hands to scoop and either toss into a bucket or hand the ball back.",
     coachingCues:
-      "Two hands on everything. Keep the line moving for max reps — this is about repetition and comfort, not diving plays.",
+      "Two hands on everything. Keep the line moving for max reps. This is about repetition and comfort, not diving plays.",
     equipment: "Balls, bucket",
+    diagramType: "bucket-drill",
   },
   {
     slug: "defense-6u8u-pop-fly-parade",
@@ -162,6 +226,7 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     coachingCues:
       "Keep tosses catchable and confidence-building. Two hands, 'watch it all the way into your glove.'",
     equipment: "Balls",
+    diagramType: "pop-up",
   },
   {
     slug: "defense-6u8u-freeze-and-field",
@@ -172,8 +237,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Players start in a 'ready position' freeze, coach rolls a grounder, they field with two hands, then freeze again in ready position before the next rep.",
     coachingCues:
-      "Reinforces the ready position habit between reps. Low pressure, high rep — no bad-hop panic at this age, just get in front and use two hands.",
+      "Reinforces the ready position habit between reps. Low pressure, high rep. No bad-hop panic at this age, just get in front and use two hands.",
     equipment: "Balls",
+    diagramType: "bucket-drill",
   },
   {
     slug: "defense-6u8u-short-hop-toss-back",
@@ -186,8 +252,35 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     coachingCues:
       "Keep throwing distance short and the focus on a clean, controlled toss rather than arm strength.",
     equipment: "Balls",
+    diagramType: "bucket-drill",
   },
-  // Pitching (coach-pitch age — player work is grip/target games only)
+  {
+    slug: "defense-6u8u-two-hands-challenge",
+    name: "Two Hands Challenge",
+    category: "defense",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Bucket-style ground ball reps where the coach tracks each player's streak of clean two-hand fields, cheering on new personal bests.",
+    coachingCues:
+      "The streak is just a fun hook. The real focus stays on two hands and a good ready position every rep.",
+    equipment: "Balls, bucket",
+    diagramType: "bucket-drill",
+  },
+  {
+    slug: "defense-6u8u-catch-and-cheer",
+    name: "Fly Ball Catch and Cheer",
+    category: "defense",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Easy self-toss or coach-toss fly balls caught with two hands, with the group cheering each catch to build confidence.",
+    coachingCues:
+      "Keep tosses short and catchable. The cheering is there to build fly-ball confidence, which many kids lack at this age.",
+    equipment: "Balls",
+    diagramType: "pop-up",
+  },
+  // Pitching (coach-pitch age; player work is grip/target games only)
   {
     slug: "pitching-6u8u-grip-and-show",
     name: "Grip & Show",
@@ -195,9 +288,9 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     ageTiers: ["6U-8U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Players learn how to hold a basic fastball grip (two fingers on top, thumb underneath) and simply show/check their grip — no throwing intensity involved.",
+      "Players learn how to hold a basic fastball grip (two fingers on top, thumb underneath) and simply show/check their grip. No throwing intensity involved.",
     coachingCues:
-      "This age is coach-pitch. Keep any 'pitching' work to grip familiarity only — no mound mechanics or throwing off a mound.",
+      "This age is coach-pitch. Keep any 'pitching' work to grip familiarity only. No mound mechanics or throwing off a mound.",
     equipment: "Balls",
   },
   {
@@ -211,6 +304,7 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     coachingCues:
       "This is an aim game, not a mechanics drill. Coaches still do the actual game pitching at this age.",
     equipment: "Balls, bucket or hula hoop target",
+    diagramType: "target-toss",
   },
   {
     slug: "pitching-6u8u-bullseye-toss",
@@ -221,7 +315,33 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Chalk or tape a simple bullseye on a fence. Players toss underhand or overhand at the target from short range, scoring points for accuracy.",
     coachingCues:
-      "Keep it playful and focused purely on aim — no velocity emphasis, no mound-distance work at this age.",
+      "Keep it playful and focused purely on aim. No velocity emphasis, no mound-distance work at this age.",
+    equipment: "Balls",
+    diagramType: "target-toss",
+  },
+  {
+    slug: "pitching-6u8u-sock-target-toss",
+    name: "Sock Target Toss",
+    category: "pitching",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Toss a ball or beanbag at a soft target (rolled sock, beanbag, hula hoop) from a short distance for fun accuracy points. No throwing intensity.",
+    coachingCues:
+      "This is purely an aim game to keep pitching-adjacent fun without any mound work or velocity focus.",
+    equipment: "Balls or beanbags, soft target",
+    diagramType: "target-toss",
+  },
+  {
+    slug: "pitching-6u8u-copy-the-grip",
+    name: "Copy the Grip",
+    category: "pitching",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Coach shows a basic grip, players mimic it and check each other's grip with a partner. No throwing at all.",
+    coachingCues:
+      "Pure grip familiarity, no throwing component. This age is coach-pitch, so there's no rush to build pitching mechanics.",
     equipment: "Balls",
   },
   // Mixed
@@ -232,10 +352,11 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     ageTiers: ["6U-8U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Coach flips or soft-tosses the ball to the batter (off a tee or a gentle flip), and defense reacts to the live ball in play. Simple, low-pressure live reps — not a full scrimmage.",
+      "Coach flips or soft-tosses the ball to the batter (off a tee or a gentle flip), and defense reacts to the live ball in play. Simple, low-pressure live reps. Not a full scrimmage.",
     coachingCues:
       "Keep pace relaxed and rotate everyone through hitting and fielding roles often. This is about getting comfortable with a ball in live play, not full game rules.",
     equipment: "Tee (optional), balls, bats",
+    diagramType: "live-bp",
   },
   {
     slug: "mixed-6u8u-live-bucket-ball",
@@ -246,8 +367,35 @@ const TIER_6U_8U: DrillSeedEntry[] = [
     description:
       "Small groups rotate through hitter, fielder, and 'feeder' roles. The feeder (coach or helper) puts the ball in play gently and defense reacts.",
     coachingCues:
-      "Rotate roles quickly to keep engagement up. Keep it light — the goal is comfort with live batted balls, not competitive scrimmage rules.",
+      "Rotate roles quickly to keep engagement up. Keep it light. The goal is comfort with live batted balls, not competitive scrimmage rules.",
     equipment: "Balls, bats, tee (optional)",
+    diagramType: "bucket-drill",
+  },
+  {
+    slug: "mixed-6u8u-tee-live-rounds",
+    name: "Tee Ball Live Rounds",
+    category: "mixed",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Hitters take a swing off the tee, then defense fields the live ball and makes a simple play, rotating through roles quickly.",
+    coachingCues:
+      "Keep the rotation fast so everyone gets both hitting and fielding reps in a short window.",
+    equipment: "Tee, balls, bats",
+    diagramType: "live-bp",
+  },
+  {
+    slug: "mixed-6u8u-coach-toss-scramble",
+    name: "Coach Toss Scramble",
+    category: "mixed",
+    ageTiers: ["6U-8U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Coach tosses the ball in gently, the batter makes contact, and the defense scrambles to field it in a fun, low-pressure scramble format.",
+    coachingCues:
+      "Keep the energy high and the pressure low. Mistakes should be met with encouragement, not correction, at this age.",
+    equipment: "Balls, bats",
+    diagramType: "bucket-drill",
   },
 ];
 
@@ -271,6 +419,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Keep it dynamic (moving), not static holds. This builds the habit of a real warm-up routine that will carry into older age groups.",
     equipment: "Cones (optional to mark distance)",
+    diagramType: "warmup-jog",
   },
   {
     slug: "warmup-9u10u-progressive-catch-ladder",
@@ -281,8 +430,9 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Partner catch starting at 20 ft, taking a few steps back every 5 clean catches, building out to 40-46 ft.",
     coachingCues:
-      "Only extend distance if the throws stay on line — arm health matters more than reaching max distance. Full arm extension and a firm front-side glove target.",
+      "Only extend distance if the throws stay on line. Arm health matters more than reaching max distance. Full arm extension and a firm front-side glove target.",
     equipment: "Balls",
+    diagramType: "long-toss",
   },
   {
     slug: "warmup-9u10u-around-the-horn-warmup",
@@ -293,8 +443,35 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Light jog around the field perimeter, dynamic stretches (leg swings, arm swings), then progressive throwing partners finishing around 40-46 ft.",
     coachingCues:
-      "A full but efficient routine — aim for under 10 minutes so it doesn't eat into practice time.",
+      "A full but efficient routine. Aim for under 10 minutes so it doesn't eat into practice time.",
     equipment: "Balls",
+    diagramType: "warmup-jog",
+  },
+  {
+    slug: "warmup-9u10u-lateral-shuffle-ladder",
+    name: "Lateral Shuffle Ladder",
+    category: "warm-up",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Dynamic lateral shuffles and high knees down a marked line before moving into partner throwing.",
+    coachingCues:
+      "Stay low and controlled on the shuffles. This is dynamic movement prep, not a race.",
+    equipment: "Cones",
+    diagramType: "warmup-jog",
+  },
+  {
+    slug: "warmup-9u10u-partner-mirror-warmup",
+    name: "Partner Mirror Warm-Up",
+    category: "warm-up",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Partners mirror each other's dynamic movements (high knees, lunges, shuffles), then move into progressive catch out to 40 ft.",
+    coachingCues:
+      "Mirroring keeps engagement up during the dynamic movement portion before throwing begins.",
+    equipment: "Balls",
+    diagramType: "long-toss",
   },
   // Hitting
   {
@@ -308,6 +485,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Focus on a level, line-drive swing path rather than lifting the ball. Rotate tee position (inside/middle/outside) between rounds.",
     equipment: "Tee, bats, balls, cones",
+    diagramType: "tee-multi",
   },
   {
     slug: "hitting-9u10u-soft-toss-rapid-fire",
@@ -320,6 +498,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Consistent toss location every rep. Cue hitters to keep hands inside the ball and stride/load on time with the toss.",
     equipment: "Balls, screen or net",
+    diagramType: "soft-toss",
   },
   {
     slug: "hitting-9u10u-front-toss-intro",
@@ -330,8 +509,9 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Coach tosses underhand or easy overhand from in front (behind an L-screen) at a short distance, introducing timing against a pitch coming from the front.",
     coachingCues:
-      "Use an L-screen for coach safety. Keep velocity low — the goal is timing against a front-thrown ball, not testing bat speed yet.",
+      "Use an L-screen for coach safety. Keep velocity low. The goal is timing against a front-thrown ball, not testing bat speed yet.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
   },
   {
     slug: "hitting-9u10u-two-ball-mix",
@@ -342,8 +522,35 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Alternate rounds of tee work and soft toss in the same rotation so hitters build consistency across both.",
     coachingCues:
-      "Tee and soft toss remain the main diet at this age — keep both in regular rotation rather than rushing to front toss for every hitter.",
+      "Tee and soft toss remain the main diet at this age. Keep both in regular rotation rather than rushing to front toss for every hitter.",
     equipment: "Tee, balls, bats",
+    diagramType: "tee-single",
+  },
+  {
+    slug: "hitting-9u10u-tee-to-front-toss-ladder",
+    name: "Tee to Front Toss Ladder",
+    category: "hitting",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "A progression round: hitters take tee reps first, then move directly into front toss reps in the same rotation.",
+    coachingCues:
+      "The tee reps groove the swing path; the front toss reps add timing on top of it in the same session.",
+    equipment: "Tee, balls, bats, L-screen",
+    diagramType: "front-toss",
+  },
+  {
+    slug: "hitting-9u10u-soft-toss-target-zones",
+    name: "Soft Toss Target Zones",
+    category: "hitting",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Soft toss reps with cone-marked target zones in the field, rewarding hitters for placing contact into a zone.",
+    coachingCues:
+      "Keeps soft toss purposeful beyond just contact. Start building an awareness of where the ball goes.",
+    equipment: "Balls, cones",
+    diagramType: "soft-toss",
   },
   // Defense
   {
@@ -357,6 +564,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Get the glove down and out early, field it out in front rather than letting it get too close to the body.",
     equipment: "Balls, bat or hands for hit balls",
+    diagramType: "backhand",
   },
   {
     slug: "defense-9u10u-pop-up-tracking",
@@ -369,6 +577,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Loud verbal calls to avoid collisions. Track the ball with two hands ready, drift under it rather than backpedaling flat-footed.",
     equipment: "Balls, bat (fungo optional)",
+    diagramType: "pop-up",
   },
   {
     slug: "defense-9u10u-infield-fundamentals-circuit",
@@ -381,6 +590,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Emphasize proper footwork and a strong, accurate throw over pure arm strength. Keep throwing distances appropriate for the 9U-10U field, not full-size.",
     equipment: "Balls, bases, gloves",
+    diagramType: "ground-ball",
   },
   {
     slug: "defense-9u10u-outfield-crow-hop-intro",
@@ -391,8 +601,35 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "After catching a fly ball, outfielders practice a basic crow-hop footwork pattern before making the throw back in.",
     coachingCues:
-      "Simple 'catch, hop, throw' rhythm — this is an introduction, not full mechanics polish yet.",
+      "Simple 'catch, hop, throw' rhythm. This is an introduction, not full mechanics polish yet.",
     equipment: "Balls",
+    diagramType: "crow-hop",
+  },
+  {
+    slug: "defense-9u10u-angle-ground-ball",
+    name: "Angle Ground Ball Drill",
+    category: "defense",
+    ageTiers: ["9U-10U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Ground balls hit at angles requiring fielders to range side to side, then throw to first at a field-appropriate distance.",
+    coachingCues:
+      "Emphasize getting the body in front when possible and squaring up before the throw.",
+    equipment: "Balls, bases",
+    diagramType: "ground-ball",
+  },
+  {
+    slug: "defense-9u10u-relay-basics",
+    name: "Relay Basics",
+    category: "defense",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Simple two-player relay from the outfield to an infield cutoff spot, introducing the concept of a relay throw.",
+    coachingCues:
+      "Keep it to two players and a short distance. The goal is understanding the concept, not full-speed execution yet.",
+    equipment: "Balls",
+    diagramType: "cutoff-relay",
   },
   // Pitching
   {
@@ -406,6 +643,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Balance, not speed. A stable balance point is the foundation the rest of the delivery builds from.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-9u10u-target-windup-drill",
@@ -416,8 +654,9 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Pitchers throw basic windup-position deliveries at a target (taped strike zone or catcher) from a mound distance appropriate for this level.",
     coachingCues:
-      "Focus on repeating a simple, consistent motion and hitting the target — not velocity.",
+      "Focus on repeating a simple, consistent motion and hitting the target. Not velocity.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-9u10u-stretch-position-basics",
@@ -426,10 +665,11 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     ageTiers: ["9U-10U"],
     skillLevels: ["intermediate", "competitive"],
     description:
-      "Introduce the stretch/set position (no runners drill) — come set, small leg lift, deliver to the target.",
+      "Introduce the stretch/set position (no runners drill). Come set, small leg lift, deliver to the target.",
     coachingCues:
       "Keep it simple: come set, brief pause, go. This is an introduction, not full pickoff/timing work yet.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-9u10u-crow-hop-long-toss-intro",
@@ -442,6 +682,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "This is arm-care and footwork introduction, not a max-distance contest.",
     equipment: "Balls",
+    diagramType: "long-toss",
   },
   {
     slug: "pitching-9u10u-pitch-smart-note",
@@ -453,7 +694,33 @@ const TIER_9U_10U: DrillSeedEntry[] = [
       "Before any pitching block, review with pitchers how pitch counts will be tracked for the day.",
     coachingCues:
       "Pitch Smart reference for 9U-10U: 75 pitches per day maximum. Track counts for every player who pitches, in practice and in games.",
-    equipment: "None — pitch count tracker/clipboard",
+    equipment: "None (pitch count tracker/clipboard)",
+  },
+  {
+    slug: "pitching-9u10u-set-position-target-game",
+    name: "Set Position Target Game",
+    category: "pitching",
+    ageTiers: ["9U-10U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Pitchers throw from the stretch position at a target for accuracy points, no baserunners involved.",
+    coachingCues:
+      "Keep the focus on a repeatable, quick set position and hitting the target. Not on holding runners yet.",
+    equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
+  },
+  {
+    slug: "pitching-9u10u-two-seam-grip-intro",
+    name: "Two-Seam Grip Intro",
+    category: "pitching",
+    ageTiers: ["9U-10U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Introduce a simple two-seam fastball grip variation, thrown at low effort toward a target to build feel.",
+    coachingCues:
+      "Low effort only. This is about grip feel, not adding velocity or movement pressure at this age.",
+    equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   // Mixed
   {
@@ -467,6 +734,7 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     coachingCues:
       "Keep pace brisk with a pitch count/time limit per hitter so everyone gets fair reps.",
     equipment: "Balls, bats, L-screen, pitching machine (optional)",
+    diagramType: "live-bp",
   },
   {
     slug: "mixed-9u10u-runner-on-first-situations",
@@ -477,8 +745,35 @@ const TIER_9U_10U: DrillSeedEntry[] = [
     description:
       "Live at-bats with a baserunner placed at first base, working basic situational defense (covering second, force plays).",
     coachingCues:
-      "Keep the situation simple — one runner, one basic read. Build situational awareness gradually.",
+      "Keep the situation simple. One runner, one basic read. Build situational awareness gradually.",
     equipment: "Balls, bats, bases, L-screen",
+    diagramType: "team-defense",
+  },
+  {
+    slug: "mixed-9u10u-machine-bp-with-defense",
+    name: "Machine BP with Defense",
+    category: "mixed",
+    ageTiers: ["9U-10U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Live at-bats off a pitching machine with a full defense reacting to balls in play, giving hitters a consistent look.",
+    coachingCues:
+      "A machine keeps pitch location consistent. Useful for hitters still building timing against a live arm.",
+    equipment: "Balls, bats, pitching machine, L-screen",
+    diagramType: "live-bp",
+  },
+  {
+    slug: "mixed-9u10u-first-and-second-situations",
+    name: "First and Second Situations",
+    category: "mixed",
+    ageTiers: ["9U-10U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Live at-bats with runners placed on first and second, working basic team defense reads for the added runner.",
+    coachingCues:
+      "Keep the situation calls simple and consistent so players start recognizing the pattern.",
+    equipment: "Balls, bats, bases, L-screen",
+    diagramType: "team-defense",
   },
 ];
 
@@ -502,7 +797,7 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Full dynamic stretch routine: leg swings (front/back and side/side), carioca down and back, and walking lunges.",
     coachingCues:
-      "Movement-based stretching only — the goal is to raise range of motion and body temperature before throwing, not to hold static stretches.",
+      "Movement-based stretching only. The goal is to raise range of motion and body temperature before throwing, not to hold static stretches.",
     equipment: "None",
   },
   {
@@ -514,7 +809,7 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Light resistance band series for the shoulder (internal/external rotation, rows, Y-raises) before throwing begins.",
     coachingCues:
-      "Light resistance, controlled reps — this is activation, not a strength workout.",
+      "Light resistance, controlled reps. This is activation, not a strength workout.",
     equipment: "Resistance bands",
   },
   {
@@ -526,8 +821,34 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Progressive partner throwing building out to full distance for this field size (50/70 or 60/90 depending on league).",
     coachingCues:
-      "Note that many leagues move to a bigger field at this age, so throwing distances jump accordingly — build up gradually rather than jumping straight to max distance.",
+      "Note that many leagues move to a bigger field at this age, so throwing distances jump accordingly. Build up gradually rather than jumping straight to max distance.",
     equipment: "Balls",
+    diagramType: "long-toss",
+  },
+  {
+    slug: "warmup-11u12u-band-activation-series",
+    name: "Band Activation Series",
+    category: "warm-up",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "A focused shoulder band activation series done before any throwing begins, light resistance throughout.",
+    coachingCues:
+      "This is activation, not strength training. Keep resistance light and reps controlled.",
+    equipment: "Resistance bands",
+  },
+  {
+    slug: "warmup-11u12u-progressive-long-toss",
+    name: "Progressive Long Toss",
+    category: "warm-up",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Partner throwing that builds step by step out to full field-size distance, emphasizing an easy arcing throw as distance increases.",
+    coachingCues:
+      "Let the throw arc naturally as distance grows rather than forcing a flat, high-effort line drive throw.",
+    equipment: "Balls",
+    diagramType: "long-toss",
   },
   // Hitting
   {
@@ -539,8 +860,9 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Coach front-tosses from behind an L-screen, progressing speed/location gradually to sharpen timing and approach.",
     coachingCues:
-      "Front toss is now a main-diet drill at this age — focus on load timing and staying through the middle of the field.",
+      "Front toss is now a main-diet drill at this age. Focus on load timing and staying through the middle of the field.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
   },
   {
     slug: "hitting-11u12u-two-strike-approach-intro",
@@ -551,8 +873,9 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Soft toss or front toss reps simulating a two-strike count: shortened stride/hands, battle mentality, put the ball in play.",
     coachingCues:
-      "Light introduction — choke up slightly, shorten the swing, prioritize contact over power in this look.",
+      "Light introduction. Choke up slightly, shorten the swing, prioritize contact over power in this look.",
     equipment: "Balls, bats, L-screen (for front toss)",
+    diagramType: "soft-toss",
   },
   {
     slug: "hitting-11u12u-live-bp-rounds",
@@ -563,8 +886,9 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Live batting practice off a coach pitching from the mound, defense in the field.",
     coachingCues:
-      "This is where live BP gets introduced as a regular tool — track pitch counts if a player is throwing BP.",
+      "This is where live BP gets introduced as a regular tool. Track pitch counts if a player is throwing BP.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "live-bp",
   },
   {
     slug: "hitting-11u12u-soft-toss-situational",
@@ -573,10 +897,37 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     ageTiers: ["11U-12U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Soft toss reps with a directional goal — hit the inside toss to the pull side, the outside toss to the opposite field.",
+      "Soft toss reps with a directional goal. Hit the inside toss to the pull side, the outside toss to the opposite field.",
     coachingCues:
       "Reinforces pitch location recognition and stresses hitting the ball where it's pitched.",
     equipment: "Balls, bats",
+    diagramType: "soft-toss",
+  },
+  {
+    slug: "hitting-11u12u-oppo-pull-soft-toss",
+    name: "Oppo/Pull Soft Toss",
+    category: "hitting",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Directional soft toss reps alternating between pull-side and opposite-field contact goals for each round.",
+    coachingCues:
+      "Call out the target field before the toss so hitters practice adjusting their contact point on demand.",
+    equipment: "Balls, bats",
+    diagramType: "soft-toss",
+  },
+  {
+    slug: "hitting-11u12u-front-toss-two-strike-mix",
+    name: "Front Toss Two-Strike Mix",
+    category: "hitting",
+    ageTiers: ["11U-12U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Alternating rounds of normal front toss and two-strike approach front toss to build both power and battle mentality.",
+    coachingCues:
+      "Announce which round it is before each set so hitters adjust their approach intentionally.",
+    equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
   },
   // Defense
   {
@@ -590,6 +941,7 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     coachingCues:
       "Cutoff man should be in line and calling for the ball loudly. Emphasize accurate, chest-high relay throws.",
     equipment: "Balls, bases",
+    diagramType: "cutoff-relay",
   },
   {
     slug: "defense-11u12u-double-play-turn",
@@ -598,10 +950,11 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     ageTiers: ["11U-12U"],
     skillLevels: ["intermediate", "competitive"],
     description:
-      "Middle infielders work the double play pivot and turn at second base — feed, footwork, and release.",
+      "Middle infielders work the double play pivot and turn at second base. Feed, footwork, and release.",
     coachingCues:
       "Start at half speed to build correct footwork before adding game speed. Glove-side feeds should lead the fielder toward the bag.",
     equipment: "Balls, bases",
+    diagramType: "double-play",
   },
   {
     slug: "defense-11u12u-long-infield-throws",
@@ -614,6 +967,33 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     coachingCues:
       "Reinforce getting the feet set and driving the throw through the target rather than relying only on arm strength for the longer distance.",
     equipment: "Balls, bases",
+    diagramType: "ground-ball",
+  },
+  {
+    slug: "defense-11u12u-first-base-footwork",
+    name: "First Base Footwork Circuit",
+    category: "defense",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Reps at first base working the stretch, scoop on short-hop throws, and footwork around the bag on incoming throws.",
+    coachingCues:
+      "Emphasize staying in contact with the bag until fully stretched, and picking short-hop throws cleanly.",
+    equipment: "Balls, bases",
+    diagramType: "ground-ball",
+  },
+  {
+    slug: "defense-11u12u-pop-up-priority-calls",
+    name: "Pop-Up Priority Calls",
+    category: "defense",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Infield and outfield pop-ups hit between two fielders, requiring loud priority calls to avoid collisions.",
+    coachingCues:
+      "Outfielder has priority over infielder on shared pop-ups. Call it loud and early, and the other fielder gets out of the way.",
+    equipment: "Balls, bat (fungo optional)",
+    diagramType: "pop-up",
   },
   // Pitching
   {
@@ -623,10 +1003,11 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     ageTiers: ["11U-12U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Full crow-hop footwork drill for arm care and long toss mechanics — catch, hop, load, throw.",
+      "Full crow-hop footwork drill for arm care and long toss mechanics. Catch, hop, load, throw.",
     coachingCues:
       "Emphasize a clean weight transfer through the crow hop into a full arm circle on the throw.",
     equipment: "Balls",
+    diagramType: "crow-hop",
   },
   {
     slug: "pitching-11u12u-long-toss-ladder",
@@ -637,8 +1018,9 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Structured long toss building distance in stages, staying on a line and building arm strength gradually.",
     coachingCues:
-      "Build distance in stages rather than jumping to max — pull back in and finish with a few crisp throws at a shorter distance.",
+      "Build distance in stages rather than jumping to max. Pull back in and finish with a few crisp throws at a shorter distance.",
     equipment: "Balls",
+    diagramType: "long-toss",
   },
   {
     slug: "pitching-11u12u-changeup-grip-intro",
@@ -649,8 +1031,9 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     description:
       "Introduce a basic changeup grip (circle change or three-finger change) thrown with the same arm speed as the fastball, no breaking balls at this age.",
     coachingCues:
-      "Same arm speed as the fastball is the whole point — the grip does the work. No curveballs or sliders at this age.",
+      "Same arm speed as the fastball is the whole point. The grip does the work. No curveballs or sliders at this age.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-11u12u-bullpen-target-work",
@@ -663,6 +1046,7 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     coachingCues:
       "Track every pitch thrown. Quality of location over max effort.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-11u12u-pitch-smart-note",
@@ -674,7 +1058,33 @@ const TIER_11U_12U: DrillSeedEntry[] = [
       "Before any pitching block, review with pitchers how pitch counts will be tracked for the day.",
     coachingCues:
       "Pitch Smart reference for 11U-12U: 85 pitches per day maximum. Track counts for every player who pitches, in practice and in games.",
-    equipment: "None — pitch count tracker/clipboard",
+    equipment: "None (pitch count tracker/clipboard)",
+  },
+  {
+    slug: "pitching-11u12u-mound-target-bullpen",
+    name: "Mound Target Bullpen",
+    category: "pitching",
+    ageTiers: ["11U-12U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Bullpen session working fastball command to inside and outside target zones at the plate.",
+    coachingCues:
+      "Track pitch counts against the 85/day limit for this tier. Prioritize hitting the called zone over max velocity.",
+    equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
+  },
+  {
+    slug: "pitching-11u12u-pickoff-move-basics",
+    name: "Pickoff Move Basics",
+    category: "pitching",
+    ageTiers: ["11U-12U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Basic pickoff move to first base worked from the stretch position, no live runner involved yet.",
+    coachingCues:
+      "Focus on a legal, balanced move. Quick but controlled, not rushed to the point of a balk.",
+    equipment: "Balls, bases",
+    diagramType: "bullpen",
   },
   // Mixed
   {
@@ -688,6 +1098,7 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     coachingCues:
       "Track pitch counts for any player pitching. Rotate hitters and defensive spots so everyone gets game-speed reps.",
     equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
   },
   {
     slug: "mixed-11u12u-situational-team-defense",
@@ -700,6 +1111,33 @@ const TIER_11U_12U: DrillSeedEntry[] = [
     coachingCues:
       "Call out the situation before each rep so the defense communicates the play before the ball is hit.",
     equipment: "Balls, bats, bases, L-screen",
+    diagramType: "team-defense",
+  },
+  {
+    slug: "mixed-11u12u-two-out-situations",
+    name: "Two-Out Situations",
+    category: "mixed",
+    ageTiers: ["11U-12U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Live at-bats simulating two-out situational defense and baserunning decisions.",
+    coachingCues:
+      "Remind the defense that force plays change with two outs. Reads should reflect the actual out count.",
+    equipment: "Balls, bats, bases, L-screen",
+    diagramType: "team-defense",
+  },
+  {
+    slug: "mixed-11u12u-live-bp-scoring-situations",
+    name: "Live BP Scoring Situations",
+    category: "mixed",
+    ageTiers: ["11U-12U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Live at-bats with runners in scoring position, working both situational hitting and team defense reps together.",
+    coachingCues:
+      "Call the situation before every pitch so both the hitter and the defense have a clear job on that rep.",
+    equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
   },
 ];
 
@@ -723,7 +1161,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Jog, full dynamic stretch series, and light plyometric work (skips, bounds, low-level hops) to prep the whole body.",
     coachingCues:
-      "Plyometric work should stay light and controlled — this is prep for practice, not a conditioning session.",
+      "Plyometric work should stay light and controlled. This is prep for practice, not a conditioning session.",
     equipment: "None",
   },
   {
@@ -735,7 +1173,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Full resistance band series for the shoulder and rotator cuff before any throwing begins.",
     coachingCues:
-      "This should be a non-negotiable daily habit at this age — arm care prevents the injuries that show up as workload increases.",
+      "This should be a non-negotiable daily habit at this age. Arm care prevents the injuries that show up as workload increases.",
     equipment: "Resistance bands",
   },
   {
@@ -747,8 +1185,34 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Step-by-step throwing progression: start on both knees at short distance focusing on arm path, move to a tall-kneeling position, then standing short toss, then build out step by step to full long toss distance.",
     coachingCues:
-      "Cue proper mechanics at every step — tall posture, glove-side lead, full arm circle — rather than rushing to distance. Each phase should look clean before moving back.",
+      "Cue proper mechanics at every step (tall posture, glove-side lead, full arm circle) rather than rushing to distance. Each phase should look clean before moving back.",
     equipment: "Balls",
+    diagramType: "long-toss",
+  },
+  {
+    slug: "warmup-13u14u-plyo-bound-circuit",
+    name: "Plyo Bound Circuit",
+    category: "warm-up",
+    ageTiers: ["13U-14U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Light bounding and skipping plyometric circuit worked into the full dynamic warm-up routine.",
+    coachingCues:
+      "Keep intensity low-to-moderate. This primes the body for practice, it isn't a conditioning workout.",
+    equipment: "None",
+  },
+  {
+    slug: "warmup-13u14u-full-long-toss-progression",
+    name: "Full Long Toss Progression",
+    category: "warm-up",
+    ageTiers: ["13U-14U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Complete long toss progression out to maximum comfortable distance and back down, with mechanics cues at each stage.",
+    coachingCues:
+      "Build out gradually and bring it back down with the same care. The pull-down phase matters as much as the build-up.",
+    equipment: "Balls",
+    diagramType: "long-toss",
   },
   // Hitting
   {
@@ -760,8 +1224,9 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Coach front-tosses from behind an L-screen at game-relevant speed, refining load timing and approach against velocity.",
     coachingCues:
-      "Front toss and live BP are the main diet at this age — prioritize game-speed timing work over tee reps.",
+      "Front toss and live BP are the main diet at this age. Prioritize game-speed timing work over tee reps.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
   },
   {
     slug: "hitting-13u14u-live-bp-situational",
@@ -770,10 +1235,11 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     ageTiers: ["13U-14U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Live batting practice with specific counts and situations assigned before each at-bat (e.g. runner on third less than two outs — get the run in).",
+      "Live batting practice with specific counts and situations assigned before each at-bat (e.g. runner on third, less than two outs: get the run in).",
     coachingCues:
       "Call the situation before the pitch so the hitter has to execute an approach, not just swing away.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "live-bp",
   },
   {
     slug: "hitting-13u14u-two-strike-battle-rounds",
@@ -782,10 +1248,11 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     ageTiers: ["13U-14U"],
     skillLevels: ALL_SKILL_LEVELS,
     description:
-      "Dedicated BP round where every pitch is treated as a two-strike count — shortened, defensive approach, battle to put the ball in play.",
+      "Dedicated BP round where every pitch is treated as a two-strike count. Shortened, defensive approach, battle to put the ball in play.",
     coachingCues:
       "This is a regular block at this age, not an occasional add-on. Reward fouling off tough pitches and putting the ball in play over swinging and missing.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
   },
   {
     slug: "hitting-13u14u-live-bp-directional",
@@ -798,6 +1265,33 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Builds pitch-location recognition and the ability to drive the ball where it's pitched under game speed.",
     equipment: "Balls, bats, L-screen",
+    diagramType: "live-bp",
+  },
+  {
+    slug: "hitting-13u14u-front-toss-velocity-ladder",
+    name: "Front Toss Velocity Ladder",
+    category: "hitting",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Front toss delivered at increasing speed tiers across rounds to sharpen timing against faster velocity.",
+    coachingCues:
+      "Only increase speed once timing looks clean at the current tier. Don't rush the ladder.",
+    equipment: "Balls, bats, L-screen",
+    diagramType: "front-toss",
+  },
+  {
+    slug: "hitting-13u14u-live-bp-risp",
+    name: "Live BP Runners in Scoring Position",
+    category: "hitting",
+    ageTiers: ["13U-14U"],
+    skillLevels: ALL_SKILL_LEVELS,
+    description:
+      "Live batting practice with runners in scoring position for every at-bat, requiring a situational hitting approach.",
+    coachingCues:
+      "Reinforce approach over results. Moving a runner or getting a productive out counts as success here.",
+    equipment: "Balls, bats, L-screen",
+    diagramType: "live-bp",
   },
   // Defense
   {
@@ -811,6 +1305,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Call the situation, run it live, then reset and debrief the correct read before moving to the next one.",
     equipment: "Balls, bats (fungo), bases",
+    diagramType: "team-defense",
   },
   {
     slug: "defense-13u14u-cutoff-relay-full-team",
@@ -821,8 +1316,9 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Full-speed cutoff and relay execution with outfielders, cutoff infielders, and base coverage all working together on balls hit to every gap.",
     coachingCues:
-      "Every throw should have a purpose — hitting the cutoff chest-high, cutoff reading whether to cut or let it through.",
+      "Every throw should have a purpose. Hitting the cutoff chest-high, cutoff reading whether to cut or let it through.",
     equipment: "Balls, bases",
+    diagramType: "cutoff-relay",
   },
   {
     slug: "defense-13u14u-double-play-series",
@@ -835,6 +1331,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Work each variation individually before mixing them randomly into live-speed reps.",
     equipment: "Balls, bases",
+    diagramType: "double-play",
   },
   {
     slug: "defense-13u14u-first-third-defense",
@@ -847,6 +1344,33 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Assign each player their exact responsibility for this look before running it live so there's no hesitation.",
     equipment: "Balls, bases",
+    diagramType: "team-defense",
+  },
+  {
+    slug: "defense-13u14u-rundown-execution",
+    name: "Run-Down Execution",
+    category: "defense",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Rundown mechanics between bases worked with full communication between the fielders involved.",
+    coachingCues:
+      "Fewer throws is better. Close the gap and force the tag rather than throwing back and forth repeatedly.",
+    equipment: "Balls, bases",
+    diagramType: "team-defense",
+  },
+  {
+    slug: "defense-13u14u-relay-accuracy-ladder",
+    name: "Relay Accuracy Ladder",
+    category: "defense",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Full-speed relay throws worked at increasing distances with accuracy scored at each stage.",
+    coachingCues:
+      "Accuracy and a quick exchange matter more than pure arm strength on the relay throw.",
+    equipment: "Balls, bases",
+    diagramType: "cutoff-relay",
   },
   // Pitching
   {
@@ -858,8 +1382,9 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Reduced-effort bullpen thrown on flat ground, focused purely on mechanics and repeating the delivery.",
     coachingCues:
-      "This is the first step in the bullpen progression — effort stays well below game intensity.",
+      "This is the first step in the bullpen progression. Effort stays well below game intensity.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-13u14u-bullpen-progression-to-mound",
@@ -870,8 +1395,9 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Bullpen intensity builds in stages from flat ground to the mound, increasing effort level only once mechanics hold up.",
     coachingCues:
-      "Do not jump straight to full mound intensity — progress the effort level step by step across sessions.",
+      "Do not jump straight to full mound intensity. Progress the effort level step by step across sessions.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-13u14u-full-mound-bullpen",
@@ -882,8 +1408,9 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Full-intensity mound bullpen session with pitch counts tracked and specific pitches called by the coach.",
     coachingCues:
-      "Every pitch counts toward the daily limit — track it live on a pitch count sheet, not from memory.",
+      "Every pitch counts toward the daily limit. Track it live on a pitch count sheet, not from memory.",
     equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
   },
   {
     slug: "pitching-13u14u-arm-care-recovery",
@@ -894,7 +1421,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     description:
       "Post-throwing band and light stretching routine done immediately after any bullpen or mound work.",
     coachingCues:
-      "Arm care after throwing matters as much as the warm-up before it — don't skip this once the bullpen is over.",
+      "Arm care after throwing matters as much as the warm-up before it. Don't skip this once the bullpen is over.",
     equipment: "Resistance bands",
   },
   {
@@ -907,7 +1434,33 @@ const TIER_13U_14U: DrillSeedEntry[] = [
       "Before any pitching block, review with pitchers how pitch counts will be tracked for the day.",
     coachingCues:
       "Pitch Smart reference for 13U-14U: 95 pitches per day maximum. Track counts for every player who pitches, in practice and in games.",
-    equipment: "None — pitch count tracker/clipboard",
+    equipment: "None (pitch count tracker/clipboard)",
+  },
+  {
+    slug: "pitching-13u14u-mound-command-bullpen",
+    name: "Mound Command Bullpen",
+    category: "pitching",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["competitive"],
+    description:
+      "Full bullpen locating multiple pitches for strikes while simulating count pressure (e.g. 'you're behind 2-0, throw a strike').",
+    coachingCues:
+      "Simulate game pressure through called counts, but keep the pitch count itself tracked against the 95/day limit.",
+    equipment: "Balls, target or catcher",
+    diagramType: "bullpen",
+  },
+  {
+    slug: "pitching-13u14u-pickoff-hold-series",
+    name: "Pickoff & Hold Series",
+    category: "pitching",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Pickoff moves and slide-step work from the stretch with simulated runners, building the ability to hold runners close.",
+    coachingCues:
+      "Vary the timing to keep it unpredictable, but stay within legal move mechanics. No balk habits.",
+    equipment: "Balls, bases",
+    diagramType: "bullpen",
   },
   // Mixed
   {
@@ -921,6 +1474,7 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Track pitch counts for anyone pitching live. Debrief situational reads briefly between innings to reinforce learning.",
     equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
   },
   {
     slug: "mixed-13u14u-game-situation-series",
@@ -933,6 +1487,33 @@ const TIER_13U_14U: DrillSeedEntry[] = [
     coachingCues:
       "Announce each situation clearly before the pitch so both sides execute with intent, not guesswork.",
     equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
+  },
+  {
+    slug: "mixed-13u14u-full-count-situational-scrimmage",
+    name: "Full Count Situational Scrimmage",
+    category: "mixed",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["intermediate", "competitive"],
+    description:
+      "Live scrimmage cycling through a variety of ball-strike counts and situations to build in-game decision-making.",
+    coachingCues:
+      "Vary the starting count each at-bat so hitters and pitchers practice adjusting approach on the fly.",
+    equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
+  },
+  {
+    slug: "mixed-13u14u-late-inning-game-simulation",
+    name: "Late-Inning Game Simulation",
+    category: "mixed",
+    ageTiers: ["13U-14U"],
+    skillLevels: ["competitive"],
+    description:
+      "Live scrimmage simulating late-inning, close-game pressure situations to build composure under game stress.",
+    coachingCues:
+      "Narrate the game situation ('bottom of the 6th, one-run game') to build the mental side alongside the physical reps.",
+    equipment: "Balls, bats, bases, L-screen",
+    diagramType: "live-scrimmage",
   },
 ];
 

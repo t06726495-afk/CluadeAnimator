@@ -4,6 +4,9 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth/session";
 import { logOut } from "@/lib/actions/auth";
 import { getUsageSummary } from "@/lib/billing/limits";
+import { Baseball } from "@phosphor-icons/react/dist/ssr/Baseball";
+import { Gear } from "@phosphor-icons/react/dist/ssr/Gear";
+import { SignOut } from "@phosphor-icons/react/dist/ssr/SignOut";
 
 export default async function DashboardLayout({
   children,
@@ -39,9 +42,9 @@ export default async function DashboardLayout({
             <Link
               href="/settings"
               aria-label="Settings"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-full text-xl hover:bg-black/5 dark:hover:bg-white/10"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
             >
-              ⚙️
+              <Gear size={22} />
             </Link>
           </div>
         </div>
@@ -57,19 +60,19 @@ export default async function DashboardLayout({
             href="/teams"
             className="flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-semibold"
           >
-            <span className="text-xl">🏟️</span>
+            <Baseball size={22} />
             Teams
           </Link>
           <Link
             href="/settings"
             className="flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-semibold"
           >
-            <span className="text-xl">⚙️</span>
+            <Gear size={22} />
             Settings
           </Link>
           <form action={logOut} className="flex flex-1">
             <button className="flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-semibold">
-              <span className="text-xl">🚪</span>
+              <SignOut size={22} />
               Log Out
             </button>
           </form>

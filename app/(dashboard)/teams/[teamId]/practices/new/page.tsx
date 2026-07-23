@@ -41,7 +41,7 @@ export default async function NewPracticePage({
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">New Practice — {team.name}</h1>
+      <h1 className="text-2xl font-extrabold">New Practice for {team.name}</h1>
       <Card>
         <CardBody className="pt-5">
           <NewPracticeForm teamId={team.id} />

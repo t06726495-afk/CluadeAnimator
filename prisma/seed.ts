@@ -14,6 +14,7 @@ async function main() {
         description: entry.description,
         coachingCues: entry.coachingCues,
         equipment: entry.equipment,
+        diagramType: entry.diagramType ?? null,
         ownerUserId: null,
       },
       update: {
@@ -22,6 +23,7 @@ async function main() {
         description: entry.description,
         coachingCues: entry.coachingCues,
         equipment: entry.equipment,
+        diagramType: entry.diagramType ?? null,
       },
     });
 

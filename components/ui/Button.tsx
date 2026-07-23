@@ -33,7 +33,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-semibold transition-colors disabled:opacity-40 disabled:pointer-events-none select-none",
+        "inline-flex items-center justify-center gap-2 font-semibold transition-[color,background-color,opacity,transform] duration-150 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100 select-none",
         variantClasses[variant],
         sizeClasses[size],
         className,

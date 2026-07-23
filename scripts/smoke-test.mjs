@@ -102,7 +102,7 @@ async function main() {
   );
 
   log("Attempt duplicate + PDF export on free plan (should be locked)");
-  const lockedButtons = await page.locator('button:has-text("🔒"), a:has-text("🔒")').count();
+  const lockedButtons = await page.locator('a[href="/settings/upgrade"]').count();
   console.log(lockedButtons >= 1 ? `OK: ${lockedButtons} locked paid-feature button(s) shown` : "WARN: no locked buttons found");
 
   log("Create a 2nd practice (2/2 allowed on free)");
@@ -126,7 +126,7 @@ async function main() {
 
   log("Upgrade to paid (mock)");
   await page.goto(`${BASE}/settings/upgrade`);
-  await page.click('button:has-text("Upgrade — $")');
+  await page.click('button:has-text("Upgrade, $")');
   await page.waitForURL(`${BASE}/settings`);
   const settingsText = await page.textContent("body");
   console.log(settingsText.includes("Paid") ? "OK: plan shows Paid after upgrade" : "FAIL: plan not updated");

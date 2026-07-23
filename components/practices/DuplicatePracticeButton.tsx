@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { duplicatePractice } from "@/lib/actions/practices";
 import { Button } from "@/components/ui/Button";
+import { Lock } from "@phosphor-icons/react/dist/ssr/Lock";
 
 export function DuplicatePracticeButton({
   practiceId,
@@ -22,7 +23,8 @@ export function DuplicatePracticeButton({
     return (
       <Link href="/settings/upgrade">
         <Button size="sm" variant="outline" type="button">
-          Duplicate 🔒
+          Duplicate
+          <Lock size={14} weight="bold" />
         </Button>
       </Link>
     );

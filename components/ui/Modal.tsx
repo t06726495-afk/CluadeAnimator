@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { X } from "@phosphor-icons/react/dist/ssr/X";
 
 export function Modal({
   open,
@@ -35,9 +36,9 @@ export function Modal({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="min-h-11 min-w-11 rounded-full text-2xl leading-none hover:bg-black/5 dark:hover:bg-white/10"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
           >
-            &times;
+            <X size={20} weight="bold" />
           </button>
         </div>
         <div className="overflow-y-auto p-4">{children}</div>

@@ -66,6 +66,7 @@ export default async function PracticeSummaryPage({
           description: sel.drill.description,
           coachingCues: sel.drill.coachingCues,
           equipment: sel.drill.equipment,
+          diagramType: sel.drill.diagramType,
           ownerUserId: sel.drill.ownerUserId,
           ageTiers: sel.drill.ageTiers.map((t) => t.ageTier),
           skillLevels: sel.drill.skillTags.map((t) => t.skillLevel),

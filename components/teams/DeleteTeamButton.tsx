@@ -11,7 +11,7 @@ export function DeleteTeamButton({ teamId }: { teamId: string }) {
     <Button
       type="button"
       variant="danger"
-      size="lg"
+      className="w-full"
       disabled={pending}
       onClick={() => {
         if (!confirm("Delete this team and all of its saved practices?")) return;

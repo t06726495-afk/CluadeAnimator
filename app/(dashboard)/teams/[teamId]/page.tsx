@@ -45,18 +45,25 @@ export default async function TeamDetailPage({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <Link href={`/teams/${team.id}/practices/new`} className="flex-1">
+      <div className="space-y-2">
+        <Link href={`/teams/${team.id}/practices/new`} className="block">
           <Button size="lg" className="w-full">
-            + New Practice
+            New Practice
           </Button>
         </Link>
-        <Link href={`/teams/${team.id}/edit`}>
-          <Button size="lg" variant="outline">
-            Edit
-          </Button>
-        </Link>
-        <DeleteTeamButton teamId={team.id} />
+        <div className="grid grid-cols-3 gap-2">
+          <Link href={`/teams/${team.id}/ask`}>
+            <Button variant="secondary" className="w-full">
+              Coach
+            </Button>
+          </Link>
+          <Link href={`/teams/${team.id}/edit`}>
+            <Button variant="outline" className="w-full">
+              Edit
+            </Button>
+          </Link>
+          <DeleteTeamButton teamId={team.id} />
+        </div>
       </div>
 
       {!usage.canCreatePractice && (

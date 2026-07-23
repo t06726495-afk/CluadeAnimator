@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { getSwappableDrills, swapDrillInBlock } from "@/lib/actions/drills";
+import { ArrowsClockwise } from "@phosphor-icons/react/dist/ssr/ArrowsClockwise";
 import type { BuilderDrill, BlockCategory, TeamAgeRange } from "./types";
 
 export function SwapDrillButton({
@@ -19,7 +20,7 @@ export function SwapDrillButton({
     <button
       type="button"
       disabled={pending}
-      className="text-sm font-bold text-accent disabled:opacity-40"
+      className="flex items-center gap-1 text-sm font-bold text-accent disabled:opacity-40"
       onClick={() => {
         startTransition(async () => {
           const alternatives = (await getSwappableDrills(
@@ -32,7 +33,8 @@ export function SwapDrillButton({
         });
       }}
     >
-      {pending ? "Swapping..." : "🔄 Swap"}
+      <ArrowsClockwise size={15} weight="bold" />
+      {pending ? "Swapping..." : "Swap"}
     </button>
   );
 }

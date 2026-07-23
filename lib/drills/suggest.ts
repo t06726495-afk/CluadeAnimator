@@ -10,6 +10,7 @@ export type SuggestedDrill = {
   description: string;
   coachingCues: string;
   equipment: string;
+  diagramType: string | null;
   ownerUserId: string | null;
   ageTiers: string[];
   skillLevels: string[];
@@ -44,6 +45,7 @@ async function fetchMatchingDrills({
     description: d.description,
     coachingCues: d.coachingCues,
     equipment: d.equipment,
+    diagramType: d.diagramType,
     ownerUserId: d.ownerUserId,
     ageTiers: d.ageTiers.map((t) => t.ageTier),
     skillLevels: d.skillTags.map((t) => t.skillLevel),
