@@ -35,11 +35,11 @@ export async function askCoach({
     return { reply: null, error: "Invalid message." };
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.GROQ_API_KEY) {
     return {
       reply: null,
       error:
-        "AI Coach isn't configured yet. Add an ANTHROPIC_API_KEY to your environment to enable it.",
+        "AI Coach isn't configured yet. Add a GROQ_API_KEY to your environment to enable it.",
     };
   }
 

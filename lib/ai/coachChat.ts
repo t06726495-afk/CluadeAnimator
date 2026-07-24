@@ -1,16 +1,16 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
 import { prisma } from "@/lib/db";
 import { mapTeamAgeRangeToDrillTier } from "@/lib/drills/ageTier";
 import type { TeamAgeRange, SkillLevel } from "@/lib/constants/enums";
 
-const MODEL = "claude-opus-4-8";
+const MODEL = "llama-3.3-70b-versatile";
 
-let cachedClient: Anthropic | null = null;
+let cachedClient: Groq | null = null;
 
-function getClient(): Anthropic {
+function getClient(): Groq {
   if (!cachedClient) {
-    cachedClient = new Anthropic();
+    cachedClient = new Groq();
   }
   return cachedClient;
 }
@@ -70,21 +70,16 @@ export async function askCoachAI({
 }): Promise<string> {
   const system = await buildSystemPrompt(team);
 
-  const response = await getClient().messages.create({
+  const response = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: 1024,
-    system,
-    output_config: { effort: "medium" },
-    messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    messages: [
+      { role: "system", content: system },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  if (response.stop_reason === "refusal") {
-    return "I'm not able to help with that one. Let's stick to practice planning and coaching questions!";
-  }
+  const content = response.choices[0]?.message?.content;
 
-  const textBlock = response.content.find(
-    (block): block is Anthropic.TextBlock => block.type === "text",
-  );
-
-  return textBlock?.text ?? "Sorry, I couldn't come up with an answer just now. Try asking again.";
+  return content?.trim() || "Sorry, I couldn't come up with an answer just now. Try asking again.";
 }

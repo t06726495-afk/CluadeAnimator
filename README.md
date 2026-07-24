@@ -14,7 +14,7 @@ diagram for most drills and an AI coach chat for open-ended questions.
 - Prisma + SQLite (`prisma/dev.db`, local file DB — no external service needed)
 - Hand-rolled email/password auth (bcrypt + opaque session token cookie)
 - Client-side PDF export (jsPDF)
-- AI Coach chat via the Anthropic API (`@anthropic-ai/sdk`) — optional, see below
+- AI Coach chat via the Groq API (`groq-sdk`, free tier), optional, see below
 - Mocked subscription upgrade (no real payment processor wired up yet — see
   `lib/actions/billing.ts`)
 
@@ -22,7 +22,7 @@ diagram for most drills and an AI coach chat for open-ended questions.
 
 ```bash
 npm install
-cp .env.example .env     # sets DATABASE_URL; add ANTHROPIC_API_KEY to enable AI chat
+cp .env.example .env     # sets DATABASE_URL; add GROQ_API_KEY to enable AI chat
 npx prisma migrate dev   # creates prisma/dev.db and applies the schema
 npx prisma db seed       # seeds the ~110-drill content library
 npm run dev
@@ -31,9 +31,9 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000). Sign up, create a team,
 and start building a practice.
 
-The "Ask AI Coach" screen (per team) needs an `ANTHROPIC_API_KEY` in `.env`
-(get one at [console.anthropic.com](https://console.anthropic.com/)). Without
-it, the rest of the app works fully — that screen just shows a
+The "Ask AI Coach" screen (per team) needs a `GROQ_API_KEY` in `.env` (get a
+free one at [console.groq.com/keys](https://console.groq.com/keys)). Without
+it, the rest of the app works fully, that screen just shows a
 "not configured" message.
 
 ## Testing
