@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Athletic Edge Baseball Club | Cages, Lessons &amp; Camps in Petaluma, CA</title>
+<meta name="description" content="Youth baseball and softball development in Petaluma, Sonoma County. Batting cage rentals, private lessons, camps and clinics. Book online.">
+<meta name="theme-color" content="#070d1a">
+
+<!-- ============================================================
+     BUILD NOTES FOR THE CLIENT HANDOFF
+     ------------------------------------------------------------
+     1. Search this file for  PLACEHOLDER  and  [$  to find every
+        value that still needs filling in. They render in red
+        monospace with a dashed outline so they cannot be missed.
+        Still open: prices, phone, street address, camp dates, the
+        founding year, and the Instagram handle.
+     2. Drop real photos in next to this file using the exact
+        filenames shown under each image slot. Sizes are noted.
+        Every slot is cut for a wide team group shot, which is what
+        the club's photo library is full of.
+     3. Set DEMO_MODE = false in the script at the bottom to turn the
+        booking form on. It already posts to the club's real inbox,
+        athleticedgepetaluma@gmail.com. formsubmit.co will send that
+        address one confirmation email the first time a form is
+        submitted; click the link in it and the form is live.
+     4. Only external request on the page is one Google Font.
+        Body copy uses the device's own UI font, so it costs
+        nothing and paints instantly.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS
+   Palette is pulled off the club logo: deep navy field, red
+   accent, silver-gray, white. The page is locked to one dark
+   theme on purpose. No section inverts.
+   Corner radius is a single 3px scale everywhere.
+   ============================================================ */
+:root{
+  --navy-950:#070d1a;
+  --navy-900:#0c1529;
+  --navy-850:#111c36;
+  --navy-800:#16243f;
+  --line:rgba(154,168,189,.16);
+  --line-hi:rgba(154,168,189,.32);
+  --red:#d8263a;          /* fills, borders, large type */
+  --red-hi:#ff4d5e;       /* small type, needs the extra contrast */
+  --silver:#9aa8bd;
+  --white:#f2f6fc;
+  --r:3px;
+  --pad:20px;
+  --display:'Big Shoulders Display','Big Shoulders','Arial Narrow',system-ui,sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+/* Any display rule on an id or class outranks the browser's own
+   [hidden] rule, so state this once and mean it. */
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--navy-950);
+  color:var(--white);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  /* clearance for the sticky mobile booking bar */
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{
+  font-family:var(--display);
+  font-weight:800;
+  line-height:.94;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+  margin:0;
+}
+/* Sized so the longer half of the club name still sets on one line.
+   It is re-tuned at each breakpoint because the hero splits into two
+   columns at 760px, which narrows the headline column as the viewport
+   gets wider. */
+h1{font-size:clamp(28px,9.2vw,46px)}
+h2{font-size:clamp(30px,7.5vw,44px)}
+h3{font-size:20px;letter-spacing:.02em}
+p{margin:0}
+
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.section{padding:56px 0;border-top:1px solid var(--line)}
+/* keeps the sticky header off a heading when a nav link jumps to it */
+.section,#top{scroll-margin-top:84px}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.section__intro{max-width:60ch;margin-bottom:28px}
+.section__intro p{color:var(--silver);margin-top:12px;font-size:16px}
+
+/* Unfilled spec values. Deliberately loud. */
+.ph{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86em;
+  color:var(--red-hi);
+  border:1px dashed rgba(255,77,94,.55);
+  border-radius:var(--r);
+  padding:1px 6px;
+  white-space:nowrap;
+}
+
+/* ============================================================
+   HEADER
+   Mobile: logo lockup + a one tap call button. Nothing hidden
+   behind a hamburger. The five section links move directly
+   under the booking block so they never push it off screen.
+   760px and up: the five links sit inline on one row.
+   ============================================================ */
+.header{
+  position:sticky;top:0;z-index:40;
+  background:rgba(7,13,26,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.header__bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+
+/* The logo lockup. Height is fixed and overflow stays visible so the
+   mark is never cropped.
+   The club's real logo is a square badge that already contains the
+   words "Athletic Edge Baseball Club", so swapping it in means
+   replacing EVERYTHING inside the .logo anchor, mark and wordmark
+   both, or the name renders twice:
+     <img class="logo__file" src="athletic-edge-logo.png"
+          alt="Athletic Edge Baseball Club">
+   object-fit contain is what guarantees it is never cropped. */
+.logo__file{height:46px;width:auto;max-width:230px;object-fit:contain}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;overflow:visible;flex:0 0 auto;min-height:44px}
+.logo__mark{width:38px;height:42px;flex:0 0 38px;display:block}
+.logo__type{display:flex;flex-direction:column;justify-content:center}
+.logo__name{font-family:var(--display);font-weight:800;font-size:19px;line-height:.9;letter-spacing:.03em;text-transform:uppercase}
+.logo__sub{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--silver);line-height:1;margin-top:3px}
+
+.nav{display:none}
+.tel{
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:44px;padding:0 14px;
+  border:1px solid var(--line-hi);border-radius:var(--r);
+  font-size:14px;font-weight:600;text-decoration:none;
+  flex:0 0 auto;
+}
+.tel svg{width:16px;height:16px;fill:var(--red-hi);flex:0 0 16px}
+.tel:hover{border-color:var(--red);background:var(--navy-900)}
+
+/* ============================================================
+   HERO
+   Short by design. Club name, one line, then the three booking
+   buttons. On a 390px phone all three are visible without any
+   scrolling. No full bleed image above them.
+   ============================================================ */
+.hero{padding:28px 0 36px;position:relative;overflow:hidden}
+.hero__line{
+  display:inline-block;width:52px;height:4px;background:var(--red);
+  margin-bottom:14px;
+}
+/* The club name always sets as two lines, split on its own two
+   halves, so it never breaks mid phrase at an odd width. */
+.hero h1 em{display:block;font-style:normal;color:var(--red)}
+.hero__say{color:var(--silver);font-size:16px;margin-top:14px;max-width:38ch}
+.hero__shot{display:none}
+
+.picks{display:grid;gap:10px;margin-top:22px}
+.pick{
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;
+  /* min-height keeps all three identical even if a label wraps on a
+     device that falls back off the display font */
+  min-height:74px;padding:14px 12px 14px 16px;
+  background:var(--navy-800);
+  border:1px solid var(--line-hi);
+  border-top:3px solid var(--red);
+  border-radius:var(--r);
+  color:var(--white);
+  font:inherit;text-align:left;cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .1s ease;
+}
+.pick:hover{background:var(--navy-850);border-color:var(--red)}
+.pick:active{transform:translateY(1px)}
+/* 21px is the largest size that keeps the longest of the three labels
+   on one line at 390px. All three stay equal weight that way. */
+.pick__label{font-family:var(--display);font-weight:800;font-size:21px;line-height:1;text-transform:uppercase;letter-spacing:.02em;display:block}
+.pick__meta{color:var(--silver);font-size:13px;line-height:1.3;margin-top:5px;display:block}
+.pick__go{
+  width:36px;height:36px;flex:0 0 36px;
+  display:grid;place-items:center;
+  background:var(--red);border-radius:var(--r);
+}
+.pick__go svg{width:17px;height:17px;fill:#fff}
+
+/* Mobile jump strip. Same five destinations as the desktop nav,
+   parked where it cannot compete with the booking block. */
+.jump{
+  display:flex;gap:8px;overflow-x:auto;
+  margin-top:26px;padding-bottom:4px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.jump::-webkit-scrollbar{display:none}
+.jump a{
+  flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;
+  padding:0 15px;border:1px solid var(--line);border-radius:var(--r);
+  font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--silver);
+}
+.jump a:hover{color:var(--white);border-color:var(--line-hi)}
+
+/* ============================================================
+   IMAGE SLOTS
+   Every slot is sized for a real team photo. The striped fill is
+   what shows before the client drops the file in, so an empty
+   slot still reads as a deliberate frame instead of a broken page.
+   ============================================================ */
+.shot{margin:0;position:relative}
+.shot__frame{
+  position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:
+    repeating-linear-gradient(135deg,rgba(154,168,189,.05) 0 12px,transparent 12px 24px),
+    var(--navy-850);
+}
+.shot img{
+  width:100%;height:auto;object-fit:cover;
+  /* alt text stays legible if the file is not in place yet */
+  color:var(--silver);font-size:12px;font-family:var(--body);
+}
+.shot figcaption{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:11px;color:var(--silver);margin-top:8px;letter-spacing:.02em;
+}
+
+/* ============================================================
+   CAGES
+   Sorted by who swings in them, not by cage number. The speed
+   range is the data the parent is actually scanning for, so it
+   gets the display weight.
+   ============================================================ */
+.cages{display:grid;gap:12px}
+.cage{
+  display:grid;grid-template-columns:auto 1fr;grid-template-areas:"speed name" "speed price" "book book";
+  gap:4px 16px;align-items:start;
+  padding:18px;background:var(--navy-900);
+  border:1px solid var(--line);border-left:3px solid var(--red);border-radius:var(--r);
+}
+.cage__speed{
+  grid-area:speed;align-self:center;
+  font-family:var(--display);font-weight:800;font-size:34px;line-height:.85;
+  min-width:66px;
+}
+.cage__speed span{display:block;font-size:11px;font-family:var(--body);font-weight:600;letter-spacing:.14em;color:var(--silver);margin-top:6px}
+.cage__name{grid-area:name;font-family:var(--display);font-weight:700;font-size:21px;line-height:1;text-transform:uppercase;letter-spacing:.02em}
+/* The level is what a new parent picks by, so it leads. The club's own
+   cage numbers stay as a quiet second line for returning families who
+   already ask for "cage 4". Delete this span to drop numbers entirely. */
+.cage__num{display:block;font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--silver);margin-top:7px}
+.cage__price{grid-area:price;font-size:14px;color:var(--silver);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cage .btn{grid-area:book;margin-top:14px;width:100%}
+
+.tunnel{
+  margin-top:12px;padding:0;background:var(--navy-900);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+}
+.tunnel__body{padding:20px}
+.tunnel__body h3{margin-bottom:8px}
+.tunnel__body p{color:var(--silver);font-size:15px}
+.tunnel__body .btn{margin-top:16px;width:100%}
+.tunnel .shot__frame{border:0;border-radius:0;border-bottom:1px solid var(--line)}
+.tunnel figcaption{padding:8px 20px 0}
+
+.hours{
+  margin-top:28px;padding:20px;
+  background:var(--navy-900);border:1px solid var(--line);border-radius:var(--r);
+}
+.hours h3{font-size:15px;letter-spacing:.14em;font-family:var(--body);font-weight:700;color:var(--silver);text-transform:uppercase;margin-bottom:14px}
+.hours dl{display:grid;grid-template-columns:auto 1fr;gap:10px 20px;margin:0}
+.hours dt{font-family:var(--display);font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
+.hours dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;color:var(--white)}
+
+/* ============================================================
+   LESSONS
+   ============================================================ */
+.lessons{display:grid;gap:24px}
+.lesson{padding:20px;background:var(--navy-900);border:1px solid var(--line);border-radius:var(--r)}
+.lesson h3{margin-bottom:10px}
+.lesson p{color:var(--silver);font-size:15px}
+.lesson__price{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--silver)}
+.lesson .btn{margin-top:16px;width:100%}
+
+/* ============================================================
+   CAMPS
+   One featured cell carrying a photo, four supporting cells.
+   Five programs, five cells, nothing empty.
+   ============================================================ */
+.camps{display:grid;gap:12px}
+.camp{
+  display:flex;flex-direction:column;
+  background:var(--navy-900);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;
+}
+.camp__body{padding:20px;display:flex;flex-direction:column;flex:1}
+.camp h3{margin-bottom:8px}
+.camp p{color:var(--silver);font-size:15px}
+.camp__when{margin-top:12px;font-size:14px;color:var(--silver);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.camp .btn{margin-top:auto;width:100%;margin-top:18px}
+.camp--feature{border-left:3px solid var(--red)}
+.camp--feature .shot__frame{border:0;border-radius:0;border-bottom:1px solid var(--line)}
+.camp--tint{background:var(--navy-850)}
+
+/* ============================================================
+   ALSO OFFERED
+   ============================================================ */
+.also{
+  display:grid;gap:20px;align-items:center;
+  padding:24px;background:var(--navy-900);
+  border:1px solid var(--line);border-left:3px solid var(--red);border-radius:var(--r);
+}
+.also p{color:var(--silver);font-size:15px;margin-top:10px}
+.also__price{margin-top:14px;font-size:14px;color:var(--silver);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about__copy{max-width:56ch;font-size:17px;color:var(--silver);margin-top:20px}
+.about__shots{display:grid;gap:16px;margin-top:28px}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact{display:grid;gap:28px}
+.contact dl{display:grid;gap:18px;margin:0}
+.contact dt{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--silver);margin-bottom:6px}
+.contact dd{margin:0;font-size:17px}
+.contact dd a{display:inline-flex;align-items:center;min-height:48px;text-decoration:none;border-bottom:1px solid var(--line-hi)}
+.contact dd a:hover{border-color:var(--red)}
+.ig{display:inline-flex;align-items:center;gap:10px;min-height:48px;text-decoration:none;font-weight:600;border-bottom:0}
+.ig svg{width:22px;height:22px;flex:0 0 22px;stroke:var(--red-hi);fill:none;stroke-width:1.8}
+
+.foot{border-top:1px solid var(--line);padding:26px 0 34px;color:var(--silver);font-size:13px}
+.foot nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:14px}
+.foot nav a{text-decoration:none;font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
+.foot nav a:hover{color:var(--white)}
+
+/* ============================================================
+   BUTTONS
+   Every tap target clears 48px.
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:50px;padding:0 20px;
+  font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase;
+  border-radius:var(--r);border:1px solid transparent;
+  cursor:pointer;text-decoration:none;white-space:nowrap;
+  transition:background .18s ease,border-color .18s ease,transform .1s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn--red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn--red:hover{background:#ef2f44}
+.btn--ghost{background:transparent;color:var(--white);border-color:var(--line-hi)}
+.btn--ghost:hover{border-color:var(--red);background:var(--navy-850)}
+
+:where(a,button,input,select,textarea):focus-visible{
+  outline:2px solid var(--red-hi);outline-offset:2px;border-radius:var(--r);
+}
+
+/* ============================================================
+   STICKY MOBILE BAR
+   Hidden from 760px up.
+   ============================================================ */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:45;
+  padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));
+  background:rgba(7,13,26,.96);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+}
+.dock .btn{width:100%;font-size:19px;min-height:54px}
+
+/* ============================================================
+   BOOKING MODAL
+   Bottom sheet on a phone so the close control and the submit
+   button both sit inside thumb reach. Centered from 760px up.
+   ============================================================ */
+.veil{
+  position:fixed;inset:0;z-index:60;
+  display:none;align-items:flex-end;justify-content:center;
+  background:rgba(3,6,13,.72);
+  padding:0;
+}
+.veil[data-open]{display:flex}
+.sheet{
+  position:relative;width:100%;max-height:92dvh;
+  display:flex;flex-direction:column;
+  background:var(--navy-900);
+  border:1px solid var(--line-hi);border-top:3px solid var(--red);
+  border-radius:var(--r) var(--r) 0 0;
+  animation:rise .24s cubic-bezier(.16,1,.3,1);
+}
+@keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .sheet{animation:none}
+  *{transition-duration:.01ms !important}
+}
+.sheet__top{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:20px 20px 14px;border-bottom:1px solid var(--line);flex:0 0 auto;
+}
+.sheet__top h2{font-size:26px}
+.sheet__top p{color:var(--silver);font-size:14px;margin-top:6px}
+.x{
+  width:48px;height:48px;flex:0 0 48px;margin:-8px -8px 0 0;
+  display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line-hi);border-radius:var(--r);
+  color:var(--white);cursor:pointer;
+}
+.x svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+.x:hover{border-color:var(--red);background:var(--navy-850)}
+/* The form is a flex item AND a flex column. Without this the body
+   never gets a bounded height, so it grows past the sheet and pushes
+   the submit button off the bottom of the screen. */
+#bookForm{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.sheet__body{padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto;min-height:0}
+.sheet__foot{padding:14px 20px calc(20px + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex:0 0 auto}
+.sheet__foot .btn{width:100%;font-size:19px;min-height:54px}
+.sheet__foot .btn[disabled]{opacity:.6;cursor:progress}
+
+.field{display:grid;gap:6px;margin-bottom:16px}
+.field label{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--white)}
+.field .hint{font-size:12px;color:var(--silver)}
+.field input,.field select{
+  width:100%;min-height:52px;padding:0 14px;
+  background:var(--navy-800);color:var(--white);
+  border:1px solid var(--line-hi);border-radius:var(--r);
+  font:inherit;font-size:16px; /* 16px stops iOS zooming on focus */
+}
+.field select{padding-right:38px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--silver) 50%),linear-gradient(135deg,var(--silver) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 23px,calc(100% - 14px) 23px;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;
+}
+.field input::placeholder{color:var(--silver);opacity:1}
+.field input:focus,.field select:focus{border-color:var(--red)}
+.field select:disabled{opacity:.55}
+.two{display:grid;gap:16px}
+
+.alert{
+  display:none;margin-bottom:16px;padding:14px;
+  border:1px solid var(--red);border-left:3px solid var(--red);
+  border-radius:var(--r);background:rgba(216,38,58,.1);
+  font-size:14px;color:var(--white);
+}
+.alert[data-show]{display:block}
+
+.done{display:none;padding:32px 20px 36px;text-align:left}
+.done[data-show]{display:block}
+.done__tick{width:52px;height:52px;display:grid;place-items:center;background:var(--red);border-radius:var(--r);margin-bottom:18px}
+.done__tick svg{width:26px;height:26px;stroke:#fff;stroke-width:2.6;fill:none}
+.done h3{font-size:28px;margin-bottom:12px}
+.done p{color:var(--silver);font-size:15px}
+.done .btn{margin-top:24px;width:100%}
+
+/* ============================================================
+   760px AND UP
+   ============================================================ */
+@media (min-width:760px){
+  :root{--pad:32px}
+  body{padding-bottom:0}
+  .dock{display:none}
+
+  .header__bar{min-height:72px}
+  .nav{display:flex;align-items:center;gap:4px}
+  .nav a{
+    display:inline-flex;align-items:center;min-height:44px;padding:0 14px;
+    font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--silver);border-radius:var(--r);
+  }
+  .nav a:hover{color:var(--white);background:var(--navy-900)}
+  .jump{display:none}
+
+  .section{padding:80px 0}
+  .hero{padding:56px 0 72px}
+  .hero h1{font-size:clamp(34px,4.6vw,52px)}
+  /* the copy column carries three buttons, so it gets the wider share */
+  .hero__grid{display:grid;grid-template-columns:1.25fr .75fr;gap:44px;align-items:center}
+  .hero__shot{display:block}
+  /* Between 760 and 1000 the hero is already two columns, so the copy
+     column is too narrow for three buttons across. They stay stacked
+     rows here and only go side by side at 1100px, where they fit
+     without the labels breaking up. */
+  .picks{margin-top:34px}
+
+  .cages{grid-template-columns:repeat(2,1fr)}
+  .cage{grid-template-areas:"speed name" "speed price" "speed book";align-content:center}
+  .cage .btn{width:auto;justify-self:start;padding:0 26px}
+  .tunnel{display:grid;grid-template-columns:1fr 1fr;align-items:center;margin-top:12px}
+  .tunnel .shot__frame{border-bottom:0;border-right:1px solid var(--line);height:100%}
+  .tunnel .shot img{height:100%;object-fit:cover}
+  .tunnel figcaption{padding:0 20px 16px}
+  .tunnel__body .btn{width:auto;padding:0 26px}
+  .hours dl{grid-template-columns:repeat(3,1fr);gap:0}
+  .hours dt{font-size:22px}
+  .hours dd{text-align:left;margin-top:4px}
+  .hours div{padding-right:24px;border-right:1px solid var(--line)}
+  .hours div:last-child{border-right:0}
+
+  .lessons{grid-template-columns:1fr 1fr}
+  .lesson{padding:28px}
+  .lesson .btn{width:auto;justify-self:start;padding:0 26px}
+
+  .camps{grid-template-columns:repeat(2,1fr)}
+  .camp--feature{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;align-items:stretch}
+  .camp--feature .shot{display:flex;flex-direction:column}
+  .camp--feature .shot__frame{border-bottom:0;border-right:1px solid var(--line);flex:1}
+  .camp--feature .shot img{height:100%;object-fit:cover}
+  .camp--feature figcaption{padding:0 20px 16px}
+  .camp .btn{width:auto;align-self:flex-start;padding:0 26px}
+
+  .also{grid-template-columns:1.2fr 1fr;gap:36px;padding:32px}
+  /* the photo column is the wider one: every real team photo the club
+     has is a wide group lineup, so they need the horizontal room */
+  .about__grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:44px;align-items:center}
+  .about__shots{margin-top:0;grid-template-columns:1fr 1fr;align-items:start}
+  .contact{grid-template-columns:1fr 1fr;gap:44px}
+  .contact dl{grid-template-columns:1fr 1fr;gap:26px}
+
+  .veil{align-items:center;padding:24px}
+  .sheet{max-width:560px;border-radius:var(--r);border-top-width:3px;max-height:88dvh}
+  .two{grid-template-columns:1fr 1fr}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .foot nav{margin-bottom:0}
+}
+
+@media (min-width:1100px){
+  .picks{grid-template-columns:repeat(3,1fr);gap:12px}
+  .pick{grid-template-columns:1fr;align-content:space-between;min-height:132px;padding:18px}
+  .pick__go{margin-top:16px}
+}
+
+@media (min-width:1080px){
+  .hero h1{font-size:60px}
+  .cages{grid-template-columns:repeat(3,1fr)}
+  .cage{grid-template-areas:"speed name" "speed price" "book book";align-content:start}
+  .cage .btn{margin-top:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="header">
+  <div class="wrap header__bar">
+    <a class="logo" href="#top" aria-label="Athletic Edge Baseball Club, back to top">
+      <svg class="logo__mark" viewBox="0 0 38 42" aria-hidden="true" focusable="false">
+        <path d="M19 1.5 36.5 8v14.5c0 9.4-7.1 15.6-17.5 18.9C8.6 38.1 1.5 31.9 1.5 22.5V8L19 1.5Z" fill="#0c1529" stroke="#d8263a" stroke-width="2.2"/>
+        <path d="M19 10.5 26 30h-4.6l-1.2-3.9h-2.4L16.6 30H12l7-19.5Z" fill="#f2f6fc"/>
+        <path d="M28.5 13.5h-6.2" stroke="#d8263a" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">Athletic Edge</span>
+        <span class="logo__sub">Baseball Club</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <a href="#cages">Cages</a>
+      <a href="#lessons">Lessons</a>
+      <a href="#camps">Camps</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <!-- TODO: real number -->
+    <a class="tel" href="tel:+17075550100">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z"/></svg>
+      Call
+    </a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <span class="hero__line" aria-hidden="true"></span>
+        <h1>Athletic Edge <em>Baseball Club</em></h1>
+        <p class="hero__say">Youth baseball and softball development in Petaluma. Cages, lessons and camps, year round.</p>
+
+        <div class="picks">
+          <button class="pick" type="button" data-book="Batting cage rental">
+            <span>
+              <span class="pick__label">Book a cage</span>
+              <span class="pick__meta">Five cages, 42 to 80 mph</span>
+            </span>
+            <span class="pick__go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 4.6 20.6 12l-7.4 7.4-2.1-2.1 3.8-3.8H3.4v-3h11.5l-3.8-3.8 2.1-2.1Z"/></svg></span>
+          </button>
+
+          <button class="pick" type="button" data-book="Private lesson">
+            <span>
+              <span class="pick__label">Book a lesson</span>
+              <span class="pick__meta">Private or small group</span>
+            </span>
+            <span class="pick__go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 4.6 20.6 12l-7.4 7.4-2.1-2.1 3.8-3.8H3.4v-3h11.5l-3.8-3.8 2.1-2.1Z"/></svg></span>
+          </button>
+
+          <button class="pick" type="button" data-book="Summer camp">
+            <span>
+              <span class="pick__label">Sign up for a camp</span>
+              <span class="pick__meta">Spring, summer, fall and winter</span>
+            </span>
+            <span class="pick__go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 4.6 20.6 12l-7.4 7.4-2.1-2.1 3.8-3.8H3.4v-3h11.5l-3.8-3.8 2.1-2.1Z"/></svg></span>
+          </button>
+        </div>
+
+        <nav class="jump" aria-label="Sections">
+          <a href="#cages">Cages</a>
+          <a href="#lessons">Lessons</a>
+          <a href="#camps">Camps</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+
+      <figure class="shot hero__shot">
+        <div class="shot__frame">
+          <img src="team-photo-1.jpg" alt="Athletic Edge players and coaches together on the field after a game" loading="lazy" width="1200" height="900" style="aspect-ratio:4/3">
+        </div>
+        <figcaption>team-photo-1.jpg &middot; 1200x900, 4:3 team group shot</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================ CAGES ============================ -->
+  <section class="section" id="cages">
+    <div class="wrap">
+      <div class="section__intro">
+        <h2>Five cages, sorted by who's hitting</h2>
+        <p>Pick the cage that matches your player's level and speed. Book a half hour or an hour, or grab the turf tunnel for team work.</p>
+      </div>
+
+      <div class="cages">
+        <article class="cage">
+          <p class="cage__speed">50<span>to 75 mph</span></p>
+          <h3 class="cage__name">High School<span class="cage__num">Cage 1</span></h3>
+          <p class="cage__price"><span class="ph">[$XX / 30 min]</span> <span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Batting cage rental" data-detail="High School cage, 50 to 75 mph">Book</button>
+        </article>
+
+        <article class="cage">
+          <p class="cage__speed">50<span>to 80 mph</span></p>
+          <h3 class="cage__name">Jr High to Little League<span class="cage__num">Cage 2</span></h3>
+          <p class="cage__price"><span class="ph">[$XX / 30 min]</span> <span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Batting cage rental" data-detail="Jr High to Little League cage, 50 to 80 mph">Book</button>
+        </article>
+
+        <article class="cage">
+          <p class="cage__speed">45<span>to 60 mph</span></p>
+          <h3 class="cage__name">Little League + Softball<span class="cage__num">Cage 3</span></h3>
+          <p class="cage__price"><span class="ph">[$XX / 30 min]</span> <span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Batting cage rental" data-detail="Little League plus Softball cage, 45 to 60 mph">Book</button>
+        </article>
+
+        <article class="cage">
+          <p class="cage__speed">40<span>to 80 mph</span></p>
+          <h3 class="cage__name">Softball<span class="cage__num">Cage 4</span></h3>
+          <p class="cage__price"><span class="ph">[$XX / 30 min]</span> <span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Batting cage rental" data-detail="Softball cage, 40 to 80 mph">Book</button>
+        </article>
+
+        <article class="cage">
+          <p class="cage__speed">42<span>mph</span></p>
+          <h3 class="cage__name">Little League<span class="cage__num">Cage 6</span></h3>
+          <p class="cage__price"><span class="ph">[$XX / 30 min]</span> <span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Batting cage rental" data-detail="Little League cage, 42 mph">Book</button>
+        </article>
+      </div>
+
+      <div class="tunnel">
+        <figure class="shot">
+          <div class="shot__frame">
+            <img src="team-photo-2.jpg" alt="A team running a practice session inside the turf tunnel" loading="lazy" width="1200" height="800" style="aspect-ratio:3/2">
+          </div>
+          <figcaption>team-photo-2.jpg &middot; 1200x800, 3:2 turf tunnel in use</figcaption>
+        </figure>
+        <div class="tunnel__body">
+          <h3>Turf Tunnel Rental</h3>
+          <p>Open turf for team practice, soft toss, fielding work and pitching. Rent it by the hour on its own or alongside a cage.</p>
+          <p class="cage__price" style="margin-top:14px"><span class="ph">[$XX / hr]</span></p>
+          <button class="btn btn--red" type="button" data-book="Turf tunnel rental">Book the tunnel</button>
+        </div>
+      </div>
+
+      <div class="hours">
+        <h3>Cage hours</h3>
+        <dl>
+          <div><dt>Mon to Fri</dt><dd>3:00 to 8:00 pm</dd></div>
+          <div><dt>Saturday</dt><dd>11:00 to 5:00</dd></div>
+          <div><dt>Sunday</dt><dd>12:00 to 3:00</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LESSONS ============================ -->
+  <section class="section" id="lessons">
+    <div class="wrap">
+      <div class="section__intro">
+        <h2>Lessons that fix one thing at a time</h2>
+        <p>Hitting, fielding, catching and pitching. Book a single session or a standing weekly slot.</p>
+      </div>
+
+      <div class="lessons">
+        <article class="lesson">
+          <h3>Private Lesson</h3>
+          <p>One player, one coach, one hour. We work the swing or the position your player is actually struggling with and send you home with something to practice.</p>
+          <p class="lesson__price"><span class="ph">[$XX / hr]</span> <span class="ph">[$XXX / 5 pack]</span></p>
+          <button class="btn btn--red" type="button" data-book="Private lesson">Book a lesson</button>
+        </article>
+
+        <article class="lesson">
+          <h3>Small Group</h3>
+          <p>Two to four players at a similar level, one coach. Cheaper per player than a private, and the reps stay high because nobody is standing around.</p>
+          <p class="lesson__price"><span class="ph">[$XX / player / hr]</span></p>
+          <button class="btn btn--ghost" type="button" data-book="Small group lesson">Book a group</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ CAMPS ============================ -->
+  <section class="section" id="camps">
+    <div class="wrap">
+      <div class="section__intro">
+        <h2>Camps and clinics all year</h2>
+        <p>School breaks, off season and in season. Every program runs out of the Petaluma facility.</p>
+      </div>
+
+      <div class="camps">
+        <article class="camp camp--feature">
+          <figure class="shot">
+            <div class="shot__frame">
+              <img src="team-photo-3.jpg" alt="Summer camp group of Athletic Edge players lined up with their coaches" loading="lazy" width="1200" height="800" style="aspect-ratio:3/2">
+            </div>
+            <figcaption>team-photo-3.jpg &middot; 1200x800, 3:2 summer camp group</figcaption>
+          </figure>
+          <div class="camp__body">
+            <h3>Summer Camp</h3>
+            <p>Full week sessions through summer break. Hitting, defense, baserunning and games every day, split by age so everyone gets real reps.</p>
+            <p class="camp__when">Ages <span class="ph">[X to XX]</span> <span class="ph">[$XXX / week]</span></p>
+            <p class="camp__when"><span class="ph">[Session dates]</span></p>
+            <button class="btn btn--red" type="button" data-book="Summer camp">Sign up</button>
+          </div>
+        </article>
+
+        <article class="camp">
+          <div class="camp__body">
+            <h3>Spring Camps and Clinics</h3>
+            <p>Short clinics timed to spring break and the start of the season. Position specific days plus full skills days.</p>
+            <p class="camp__when"><span class="ph">[Dates]</span> <span class="ph">[$XX / day]</span></p>
+            <button class="btn btn--ghost" type="button" data-book="Spring camp or clinic">Sign up</button>
+          </div>
+        </article>
+
+        <article class="camp camp--tint">
+          <div class="camp__body">
+            <h3>Fall Ball</h3>
+            <p>Weekly team play through the fall for players who want to keep competing after the spring season ends.</p>
+            <p class="camp__when"><span class="ph">[Dates]</span> <span class="ph">[$XXX / season]</span></p>
+            <button class="btn btn--ghost" type="button" data-book="Fall ball">Sign up</button>
+          </div>
+        </article>
+
+        <article class="camp">
+          <div class="camp__body">
+            <h3>Winter Workouts</h3>
+            <p>Indoor small group training through the off season. Strength, swing work and arm care so players show up to spring ready.</p>
+            <p class="camp__when"><span class="ph">[Dates]</span> <span class="ph">[$XX / session]</span></p>
+            <button class="btn btn--ghost" type="button" data-book="Winter workouts">Sign up</button>
+          </div>
+        </article>
+
+        <article class="camp camp--tint">
+          <div class="camp__body">
+            <h3>Ski Week Clinic</h3>
+            <p>A three day clinic over the February ski week break for players who are staying in town.</p>
+            <p class="camp__when"><span class="ph">[Dates]</span> <span class="ph">[$XXX / clinic]</span></p>
+            <button class="btn btn--ghost" type="button" data-book="Ski week clinic">Sign up</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ ALSO OFFERED ============================ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="also">
+        <div>
+          <h2 style="font-size:clamp(26px,6vw,34px)">Glove Repair</h2>
+          <p>Relacing, reshaping and break in work, done in house. Drop the glove off during cage hours and we will tell you what it needs before we start.</p>
+          <p class="also__price">Relace from <span class="ph">[$XX]</span> &nbsp; Break in <span class="ph">[$XX]</span></p>
+        </div>
+        <div>
+          <button class="btn btn--ghost" type="button" data-book="Glove repair" style="width:100%">Ask about a glove</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ ABOUT ============================ -->
+  <section class="section" id="about">
+    <div class="wrap about__grid">
+      <div>
+        <h2>Built in Petaluma</h2>
+        <p class="about__copy">Athletic Edge has trained Sonoma County baseball and softball players since <span class="ph">[YEAR]</span>. Our coaches work with athletes from Little League through high school, in the cages and one on one. Everything runs out of one facility in Petaluma, every month of the year.</p>
+      </div>
+      <div class="about__shots">
+        <figure class="shot">
+          <div class="shot__frame">
+            <img src="team-photo-4.jpg" alt="An Athletic Edge team lined up on the field with their coaches" loading="lazy" width="1200" height="800" style="aspect-ratio:3/2">
+          </div>
+          <figcaption>team-photo-4.jpg &middot; 1200x800, 3:2 team lineup</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot__frame">
+            <img src="team-photo-5.jpg" alt="An Athletic Edge team celebrating together after a win" loading="lazy" width="1200" height="800" style="aspect-ratio:3/2">
+          </div>
+          <figcaption>team-photo-5.jpg &middot; 1200x800, 3:2 team candid</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ CONTACT ============================ -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="section__intro">
+        <h2>Come see the place</h2>
+        <p>Booking online is fastest. If you would rather talk it through, call during cage hours.</p>
+      </div>
+
+      <div class="contact">
+        <dl>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:athleticedgepetaluma@gmail.com">athleticedgepetaluma@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd><a href="tel:+17075550100" class="ph" style="border-bottom:0">[(707) XXX-XXXX]</a></dd>
+          </div>
+          <div>
+            <dt>Address</dt>
+            <dd><span class="ph">[Street address, Petaluma, CA 94952]</span></dd>
+          </div>
+          <div>
+            <dt>Instagram</dt>
+            <dd>
+              <a class="ig" href="https://instagram.com/PLACEHOLDER_HANDLE" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3" y="3" width="18" height="18" rx="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/>
+                </svg>
+                <span class="ph" style="border:0;padding:0">@PLACEHOLDER_HANDLE</span>
+              </a>
+            </dd>
+          </div>
+        </dl>
+
+        <div class="hours" style="margin-top:0">
+          <h3>Cage hours</h3>
+          <dl style="grid-template-columns:auto 1fr">
+            <div style="display:contents"><dt>Mon to Fri</dt><dd>3:00 to 8:00 pm</dd></div>
+            <div style="display:contents"><dt>Saturday</dt><dd>11:00 to 5:00</dd></div>
+            <div style="display:contents"><dt>Sunday</dt><dd>12:00 to 3:00</dd></div>
+          </dl>
+          <button class="btn btn--red" type="button" data-book="Batting cage rental" style="width:100%;margin-top:20px">Book a cage</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+      <nav aria-label="Footer">
+        <a href="#cages">Cages</a>
+        <a href="#lessons">Lessons</a>
+        <a href="#camps">Camps</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p>Athletic Edge Baseball Club, Petaluma CA</p>
+    </div>
+  </footer>
+</main>
+
+<!-- ============================ STICKY MOBILE BAR ============================ -->
+<div class="dock">
+  <button class="btn btn--red" type="button" data-book="Batting cage rental">Reserve a Cage</button>
+</div>
+
+<!-- ============================ BOOKING MODAL ============================ -->
+<div class="veil" id="veil">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+
+    <div class="sheet__top">
+      <div>
+        <h2 id="sheetTitle">Start a booking</h2>
+        <p>We confirm by text or email, usually the same day.</p>
+      </div>
+      <button class="x" type="button" id="closeBtn" aria-label="Close booking form">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Native action and method are set so the form still submits if
+         the script never runs. -->
+    <form id="bookForm" method="POST" action="https://formsubmit.co/athleticedgepetaluma@gmail.com">
+      <div class="sheet__body" id="formBody">
+        <div class="alert" id="alert" role="alert"></div>
+
+        <div class="field">
+          <label for="f-name">Player name</label>
+          <input id="f-name" name="Player name" type="text" autocomplete="name" required placeholder="First and last">
+        </div>
+
+        <div class="field">
+          <label for="f-email">Parent email</label>
+          <input id="f-email" name="Parent email" type="email" autocomplete="email" required placeholder="you@example.com">
+        </div>
+
+        <div class="field">
+          <label for="f-phone">Phone</label>
+          <input id="f-phone" name="Phone" type="tel" autocomplete="tel" required placeholder="(707) 555 0100">
+        </div>
+
+        <div class="field">
+          <label for="f-level">Player age and level</label>
+          <select id="f-level" name="Player age and level" required>
+            <option value="">Choose one</option>
+            <option>6 to 8, tee ball or coach pitch</option>
+            <option>8 to 10, Little League</option>
+            <option>11 to 12, Little League</option>
+            <option>12 to 14, Jr High</option>
+            <option>14 to 18, High School</option>
+            <option>Softball, 10 and under</option>
+            <option>Softball, 12 and under</option>
+            <option>Softball, 14 and up</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="f-service">Service</label>
+          <select id="f-service" name="Service" required>
+            <option value="">Choose one</option>
+            <option>Batting cage rental</option>
+            <option>Turf tunnel rental</option>
+            <option>Private lesson</option>
+            <option>Small group lesson</option>
+            <option>Summer camp</option>
+            <option>Spring camp or clinic</option>
+            <option>Fall ball</option>
+            <option>Winter workouts</option>
+            <option>Ski week clinic</option>
+            <option>Glove repair</option>
+          </select>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="f-date">Preferred date</label>
+            <input id="f-date" name="Preferred date" type="date" required>
+          </div>
+          <div class="field">
+            <label for="f-time">Preferred time</label>
+            <select id="f-time" name="Preferred time" required disabled>
+              <option value="">Pick a date first</option>
+            </select>
+            <span class="hint" id="timeHint">Open Mon to Fri 3 to 8pm, Sat 11 to 5, Sun 12 to 3.</span>
+          </div>
+        </div>
+
+        <!-- Filled in from whichever button opened the form. -->
+        <input type="hidden" name="Selected option" id="f-detail" value="">
+        <!-- formsubmit.co configuration -->
+        <input type="hidden" name="_subject" id="f-subject" value="New booking request from the website">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      </div>
+
+      <div class="sheet__foot">
+        <button class="btn btn--red" type="submit" id="submitBtn">Send request</button>
+      </div>
+    </form>
+
+    <div class="done" id="done">
+      <div class="done__tick" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Request sent</h3>
+      <p>We have your details and will confirm the slot by text or email, usually the same day. Nothing is charged online, you pay at the facility.</p>
+      <button class="btn btn--ghost" type="button" id="doneBtn">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   BOOKING MODAL
+   The only JavaScript on the page. Everything else is static
+   HTML and CSS, so the page still reads and the phone number
+   still works if this never loads.
+
+   >>> ONE THING TO CHANGE BEFORE THIS GOES LIVE <<<
+   Set DEMO_MODE to false. While it is true the form skips the
+   network call and shows the success state, so the demo can be
+   clicked through offline. It does not send anything.
+
+   The address is already the club's real inbox, in both the form
+   action above and ENDPOINT below. formsubmit.co emails it once to
+   confirm on the first real submission.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var DEMO_MODE = true;
+  var ENDPOINT  = 'https://formsubmit.co/ajax/athleticedgepetaluma@gmail.com';
+
+  /* Opening hour and closing hour per weekday, 24h. 0 is Sunday. */
+  var HOURS = {
+    0: [12, 15],   // Sun 12 to 3
+    1: [15, 20],   // Mon to Fri 3 to 8
+    2: [15, 20],
+    3: [15, 20],
+    4: [15, 20],
+    5: [15, 20],
+    6: [11, 17]    // Sat 11 to 5
+  };
+
+  var veil      = document.getElementById('veil');
+  var sheet     = veil.querySelector('.sheet');
+  var form      = document.getElementById('bookForm');
+  var formBody  = document.getElementById('formBody');
+  var foot      = veil.querySelector('.sheet__foot');
+  var done      = document.getElementById('done');
+  var alertBox  = document.getElementById('alert');
+  var submitBtn = document.getElementById('submitBtn');
+  var closeBtn  = document.getElementById('closeBtn');
+  var doneBtn   = document.getElementById('doneBtn');
+  var serviceEl = document.getElementById('f-service');
+  var detailEl  = document.getElementById('f-detail');
+  var subjectEl = document.getElementById('f-subject');
+  var dateEl    = document.getElementById('f-date');
+  var timeEl    = document.getElementById('f-time');
+  var timeHint  = document.getElementById('timeHint');
+
+  var lastFocus = null;
+  var scrollY   = 0;
+
+  /* ---------- time slots ---------- */
+
+  function label(h, m) {
+    var suffix = h >= 12 ? 'pm' : 'am';
+    var hour   = h % 12 === 0 ? 12 : h % 12;
+    return hour + ':' + (m === 0 ? '00' : '30') + ' ' + suffix;
+  }
+
+  function fillSlots(value) {
+    timeEl.innerHTML = '';
+
+    if (!value) {
+      timeEl.disabled = true;
+      timeEl.appendChild(new Option('Pick a date first', ''));
+      timeHint.textContent = 'Open Mon to Fri 3 to 8pm, Sat 11 to 5, Sun 12 to 3.';
+      return;
+    }
+
+    /* Parsing with an explicit local time keeps the weekday correct.
+       new Date('2026-08-01') alone would be read as UTC. */
+    var d = new Date(value + 'T00:00:00');
+    var span = HOURS[d.getDay()];
+
+    timeEl.appendChild(new Option('Choose a start time', ''));
+
+    /* Half hour starts, last one leaves 30 minutes before close. */
+    for (var h = span[0]; h < span[1]; h++) {
+      timeEl.appendChild(new Option(label(h, 0), label(h, 0)));
+      if (h + 0.5 < span[1]) {
+        timeEl.appendChild(new Option(label(h, 30), label(h, 30)));
+      }
+    }
+
+    timeEl.disabled = false;
+    timeHint.textContent = 'That day we are open ' + label(span[0], 0) + ' to ' + label(span[1], 0) + '.';
+  }
+
+  dateEl.addEventListener('change', function () { fillSlots(dateEl.value); });
+
+  /* ---------- open and close ---------- */
+
+  function focusables() {
+    return Array.prototype.filter.call(
+      sheet.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'),
+      function (el) { return el.offsetParent !== null; }
+    );
+  }
+
+  function open(service, detail) {
+    lastFocus = document.activeElement;
+
+    /* Reset back to the form in case the sheet was left on success. */
+    form.hidden = false;
+    foot.hidden = false;
+    done.removeAttribute('data-show');
+    alertBox.removeAttribute('data-show');
+
+    if (service) serviceEl.value = service;
+    detailEl.value  = detail || '';
+    subjectEl.value = 'Booking request: ' + (service || 'general') + (detail ? ' (' + detail + ')' : '');
+
+    /* No dates in the past. */
+    var now = new Date();
+    dateEl.min = now.getFullYear() + '-' +
+                 String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                 String(now.getDate()).padStart(2, '0');
+
+    scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + scrollY + 'px';
+    document.body.style.width = '100%';
+
+    veil.setAttribute('data-open', '');
+
+    /* Focus the close control rather than the first input, so a phone
+       keyboard does not jump up and cover the sheet on open. */
+    closeBtn.focus();
+  }
+
+  function close() {
+    veil.removeAttribute('data-open');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    /* instant, not smooth. This is restoring the position the page was
+       already at, so animating it reads as the page jumping around. */
+    window.scrollTo({ top: scrollY, behavior: 'instant' });
+    if (lastFocus) lastFocus.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest('[data-book]');
+    if (trigger) {
+      open(trigger.getAttribute('data-book'), trigger.getAttribute('data-detail'));
+      return;
+    }
+    /* Tapping the dimmed area closes. */
+    if (e.target === veil) close();
+  });
+
+  closeBtn.addEventListener('click', close);
+  doneBtn.addEventListener('click', close);
+
+  document.addEventListener('keydown', function (e) {
+    if (!veil.hasAttribute('data-open')) return;
+
+    if (e.key === 'Escape') { close(); return; }
+
+    if (e.key === 'Tab') {
+      var list = focusables();
+      if (!list.length) return;
+      var first = list[0];
+      var last  = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  });
+
+  /* ---------- submit ---------- */
+
+  function fail(message) {
+    alertBox.textContent = message;
+    alertBox.setAttribute('data-show', '');
+    formBody.scrollTop = 0;
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send request';
+  }
+
+  function succeed() {
+    form.hidden = true;
+    foot.hidden = true;
+    done.setAttribute('data-show', '');
+    formBody.scrollTop = 0;
+    form.reset();
+    fillSlots('');
+    doneBtn.focus();
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    alertBox.removeAttribute('data-show');
+
+    /* Native validation gives the inline messages and the focus jump. */
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending';
+
+    if (DEMO_MODE) {
+      window.setTimeout(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send request';
+        succeed();
+      }, 500);
+      return;
+    }
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.status);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send request';
+        succeed();
+      })
+      .catch(function () {
+        fail('That did not send. Call us during cage hours and we will get the slot booked for you.');
+      });
+  });
+})();
+</script>
+
+</body>
+</html>
