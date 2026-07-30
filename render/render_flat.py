@@ -116,8 +116,22 @@ def render_frame(scene, env_name, t, seed, bg=None):
     return img
 
 
+# Scenes are rebuilt inside each worker rather than shipped through the pool:
+# the manifest's background entries are local closures, which cannot be
+# pickled, so passing scene dicts to workers fails outright.
+_SCENES = {}
+
+
+def scenes_for(si):
+    if si not in _SCENES:
+        _SCENES[si] = SECTIONS[si]()
+    return _SCENES[si]
+
+
 def render_one(task):
-    si, idx, scene, env_name, out_path = task
+    si, idx, out_path = task
+    scene = scenes_for(si)[idx]
+    env_name = env_of(scene)
     if os.path.exists(out_path) and os.path.getsize(out_path) > 2048:
         return (si, idx, out_path, "cached")
     n = max(1, int(round(scene["duration"] * FPS)))
@@ -143,9 +157,9 @@ def build_tasks():
     for si in range(4):
         scenes = SECTIONS[si]()
         os.makedirs(os.path.join(OUT_SCENES, f"s{si + 1}"), exist_ok=True)
-        for idx, sc in enumerate(scenes):
+        for idx in range(len(scenes)):
             out = os.path.join(OUT_SCENES, f"s{si + 1}", f"{idx:03d}.mp4")
-            tasks.append((si, idx, sc, env_of(sc), out))
+            tasks.append((si, idx, out))
     return tasks
 
 
