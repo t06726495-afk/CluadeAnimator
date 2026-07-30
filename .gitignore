@@ -1,5 +1,4 @@
-output/scenes/
-output/final/*.mp4
+output/
 assets/paper_texture.png
 __pycache__/
 *.pyc
