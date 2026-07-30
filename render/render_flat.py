@@ -134,7 +134,13 @@ def render_one(task):
     env_name = env_of(scene)
     if os.path.exists(out_path) and os.path.getsize(out_path) > 2048:
         return (si, idx, out_path, "cached")
-    n = max(1, int(round(scene["duration"] * FPS)))
+    # Frame count from cumulative timeline position, not from this scene's
+    # duration alone. The scenes tile their section exactly, but rounding each
+    # duration independently accumulates error (section 3 drifted 0.42s), and
+    # the cut has to stay frame-exact for the voiceover to stay in sync.
+    # Differencing rounded absolute offsets makes the per-section total exact.
+    rel = scene["t_start"] - SECTION_BOUNDS[si][0]
+    n = max(1, int(round((rel + scene["duration"]) * FPS)) - int(round(rel * FPS)))
     tmp = f"{out_path}.tmp.{os.getpid()}.mp4"
     seed = (hash(scene["seed_id"]) & 0xFFFF) + idx
     bg = render_bg(env_name, 0.0, seed) if env_name in STATIC_ENVS else None
@@ -164,12 +170,16 @@ def build_tasks():
 
 
 def duration(path):
-    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                        "-of", "csv=p=0", path], capture_output=True, text=True)
-    try:
-        return round(float(r.stdout.strip()), 2)
-    except ValueError:
-        return None
+    # parsed from ffmpeg's own output: this toolchain ships ffmpeg without
+    # a companion ffprobe binary
+    out = subprocess.run(["ffmpeg", "-i", path], stderr=subprocess.PIPE, text=True).stderr
+    for line in out.splitlines():
+        line = line.strip()
+        if line.startswith("Duration:"):
+            ts = line.split("Duration:")[1].split(",")[0].strip()
+            h, m, s = ts.split(":")
+            return round(int(h) * 3600 + int(m) * 60 + float(s), 2)
+    return None
 
 
 def concat(si, n, out_path):
