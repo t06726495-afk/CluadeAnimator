@@ -235,10 +235,15 @@ LOOKS = {
 CYCLE_POSES = {"run": 2.6, "sprint_lean": 3.0, "march": 1.5}
 
 
+# Civilian dress, for settings that are neither sport nor service -- Grant's
+# law office, where both a baseball uniform and an army tunic are wrong.
+CIVIL = dict(kit="tunic", col=(88, 84, 90), col2=(64, 60, 68), hat=None)
+
+
 def look_for(seed_id, ctx="war"):
     base = LOOKS.get(str(seed_id).rsplit("_", 1)[0], LOOKS["_default"])
     merged = {k: v for k, v in base.items() if k not in ("sport", "war")}
-    merged.update(base.get(ctx, base["war"]))
+    merged.update(CIVIL if ctx == "civil" else base.get(ctx, base["war"]))
     merged.setdefault("hat", None)
     return merged
 

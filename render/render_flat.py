@@ -38,6 +38,7 @@ SPECIFIC = set(ENVS) - {"env_plain"}
 # The plain backdrop counts as war: its scenes are almost entirely
 # "mobilized" / "Royal Marines" / "Navy aviator" / "Medal of Honor" beats.
 SPORT_ENVS = {"env_track", "env_pitch", "env_court", "env_diamond", "env_medal"}
+CIVIL_ENVS = {"env_office"}
 
 STATIC_ENVS = {
     "env_track", "env_pitch", "env_court", "env_diamond", "env_medal",
@@ -111,7 +112,8 @@ def render_frame(scene, env_name, t, seed, bg=None):
         drop = foot_drop(sc, fg["pose"], scene["seed_id"])
         draw_person(d, cx, ground - drop, sc, fg.get("facing", 1),
                     fg["pose"], scene["seed_id"], t=t, seed=seed + i,
-                    ctx=("sport" if env_name in SPORT_ENVS else "war"))
+                    ctx=("sport" if env_name in SPORT_ENVS
+                         else "civil" if env_name in CIVIL_ENVS else "war"))
 
     nc = spec.get("namecard")
     if nc:
