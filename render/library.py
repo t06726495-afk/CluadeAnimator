@@ -461,7 +461,7 @@ def mountain_range(cx, cy, width, seed=0, color=INK, scale=1.0, snowy=True):
     pts = [(x0, cy)]
     peaks = []
     for i in range(n):
-        peak_h = rng.uniform(50, 100) * scale
+        peak_h = rng.uniform(75, 145) * scale
         px = x0 + (i + 0.5) * step
         py = cy - peak_h
         pts.append((px, py))
@@ -491,14 +491,14 @@ def volcanic_island(cx, cy, width, seed=0, color=INK, scale=1.0):
     step = width / n
     pts = [(x0, cy)]
     for i in range(n):
-        h = rng.uniform(14, 46) * scale
+        h = rng.uniform(55, 135) * scale
         pts.append((x0 + (i + 0.5) * step, cy - h))
     pts.append((x0 + width, cy))
-    strokes = [Stroke(pts, color=color, width=4, seed=seed + 1, amplitude=1.8, smooth=False)]
+    strokes = [Stroke(pts, color=color, width=5, seed=seed + 1, amplitude=2.2, smooth=False)]
     # smoke wisp
-    smoke = [(x0 + width * 0.5, cy - 40 * scale)]
+    smoke = [(x0 + width * 0.5, cy - 120 * scale)]
     for i in range(1, 5):
-        smoke.append((x0 + width * 0.5 + 10 * scale * math.sin(i), cy - 40 * scale - i * 14 * scale))
+        smoke.append((x0 + width * 0.5 + 10 * scale * math.sin(i), cy - 120 * scale - i * 14 * scale))
     strokes.append(Stroke(smoke, color=color, width=2, seed=seed + 2, amplitude=2.0))
     return {"strokes": strokes, "texts": []}
 
