@@ -50,7 +50,10 @@ def render_one(args):
     scenes = SECTIONS[section_idx]()
     sc = scenes[scene_idx]
     scene = build_scene(sc["spec"], seed_base=sc["seed_id"])
-    tmp_path = out_path + ".tmp.mp4"
+    # pid-unique temp name: two concurrent renderers pointed at the same output
+    # dir would otherwise share one temp path, and the loser's os.replace()
+    # dies with FileNotFoundError after the winner renames it away.
+    tmp_path = f"{out_path}.tmp.{os.getpid()}.mp4"
     render_scene_to_mp4(scene, sc["duration"], tmp_path, fps=FPS, seed_id=hash(sc["seed_id"]) % 1000000, n_frames=n_frames)
     os.replace(tmp_path, out_path)
     return (section_idx, scene_idx, out_path, "rendered")
