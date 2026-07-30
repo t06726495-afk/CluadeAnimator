@@ -48,7 +48,7 @@ POSES = {
     "sprint_lean": dict(lean=26, head_tilt=-6, arms=(-55, 70, 62, -55), legs=(50, -60, -46, 65), crouch=0.08, mouth=0.3),
     "leap_tape": dict(lean=22, head_tilt=-4, arms=(70, -10, 75, -10), legs=(35, -20, -55, 30), crouch=0, mouth=0.6),
     "salute": dict(lean=0, head_tilt=0, arms=(4, 0, 95, 75), legs=(3, 0, -3, 0), crouch=0, mouth=-0.1),
-    "point_forward": dict(lean=4, head_tilt=0, arms=(6, 4, -85, 5), legs=(4, 0, -6, 0), crouch=0, mouth=0.1),
+    "point_forward": dict(lean=4, head_tilt=0, arms=(6, 4, 85, 5), legs=(4, 0, -6, 0), crouch=0, mouth=0.1),
     "wave": dict(lean=0, head_tilt=2, arms=(6, 4, -120, -40), legs=(2, 0, -2, 0), crouch=0, mouth=0.5),
     "kneel": dict(lean=10, head_tilt=0, arms=(20, 10, -20, 30), legs=(85, -110, 10, -90), crouch=0.32, mouth=-0.2),
     "sit": dict(lean=4, head_tilt=0, arms=(30, 20, -10, 15), legs=(80, -90, 75, -85), crouch=0.30, mouth=0),
