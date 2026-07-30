@@ -34,6 +34,11 @@ SPECIFIC = set(ENVS) - {"env_plain"}
 # once per scene and reused for every frame; only the figure and captions are
 # redrawn. Roughly 60% of scenes qualify, and the backdrops are by far the
 # most expensive part of a frame.
+# Sport settings wear the sport kit; every other setting wears the uniform.
+# The plain backdrop counts as war: its scenes are almost entirely
+# "mobilized" / "Royal Marines" / "Navy aviator" / "Medal of Honor" beats.
+SPORT_ENVS = {"env_track", "env_pitch", "env_court", "env_diamond", "env_medal"}
+
 STATIC_ENVS = {
     "env_track", "env_pitch", "env_court", "env_diamond", "env_medal",
     "env_grave", "env_office", "env_prison", "env_forest", "env_plain",
@@ -105,7 +110,8 @@ def render_frame(scene, env_name, t, seed, bg=None):
         cx = fg["cx"]
         drop = foot_drop(sc, fg["pose"], scene["seed_id"])
         draw_person(d, cx, ground - drop, sc, fg.get("facing", 1),
-                    fg["pose"], scene["seed_id"], t=t, seed=seed + i)
+                    fg["pose"], scene["seed_id"], t=t, seed=seed + i,
+                    ctx=("sport" if env_name in SPORT_ENVS else "war"))
 
     nc = spec.get("namecard")
     if nc:

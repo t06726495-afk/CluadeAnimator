@@ -183,31 +183,64 @@ def spectators(d, x0, x1, y_rows, seed, col=CROWD, step=42):
 
 # ----------------------------------------------------------------- character
 
+# Each man gets two outfits. These were athletes who became soldiers, so a
+# single fixed costume put Wilding in tennis whites inside a trench and Bouin
+# in a running singlet at the front. Sport settings draw the sport kit;
+# everything else draws the uniform he actually served in.
 LOOKS = {
-    # kit: singlet | tennis | football | baseball | tunic | greatcoat | flight | suit | riding
-    "bouin":      dict(hair=(58, 44, 34), mous=True, kit="singlet", col=WHITE, col2=WHITE_SHADE),
-    "halswelle":  dict(hair=(96, 74, 48), mous=True, kit="tunic", col=KHAKI, col2=KHAKI_D, hat="peaked"),
-    "wilding":    dict(hair=(64, 50, 38), mous=False, kit="tennis", col=WHITE, col2=WHITE_SHADE),
-    "bell":       dict(hair=(72, 54, 38), mous=False, kit="football", col=(206, 202, 196), col2=(178, 174, 168)),
-    "tull":       dict(hair=(44, 34, 28), mous=False, kit="tunic", col=KHAKI, col2=KHAKI_D,
-                       skin=DARK_SKIN, skin2=DARK_SKIN_SHADE, hat="peaked"),
-    "grant":      dict(hair=(70, 54, 40), mous=False, kit="baseball", col=(232, 228, 219), col2=(204, 200, 191)),
-    "baker":      dict(hair=(128, 100, 62), mous=False, kit="flight", col=LEATHER, col2=LEATHER_D, hat="flight"),
-    "kusocinski": dict(hair=(72, 56, 40), mous=False, kit="singlet", col=WHITE, col2=WHITE_SHADE),
-    "kinnick":    dict(hair=(96, 74, 50), mous=False, kit="flight", col=NAVY, col2=NAVY_D, hat="flight"),
-    "paddock":    dict(hair=(64, 50, 36), mous=False, kit="singlet", col=WHITE, col2=WHITE_SHADE),
-    "blozis":     dict(hair=(70, 54, 38), mous=False, kit="tunic", col=USARMY, col2=USARMY_D,
-                       hat="helmet", bulk=1.22),
-    "nishi":      dict(hair=(36, 30, 28), mous=True, kit="riding", col=JAPAN, col2=JAPAN_D, hat="peaked"),
-    "lummus":     dict(hair=(78, 60, 42), mous=False, kit="tunic", col=USARMY, col2=USARMY_D, hat="helmet"),
-    "_default":   dict(hair=(66, 52, 40), mous=False, kit="tunic", col=HORIZON, col2=HORIZON_D, hat="kepi"),
+    "bouin": dict(hair=(58, 44, 34), mous=True,
+                  sport=dict(kit="singlet", col=WHITE, col2=WHITE_SHADE),
+                  war=dict(kit="tunic", col=HORIZON, col2=HORIZON_D, hat="kepi")),
+    "halswelle": dict(hair=(96, 74, 48), mous=True,
+                      sport=dict(kit="singlet", col=WHITE, col2=WHITE_SHADE),
+                      war=dict(kit="tunic", col=KHAKI, col2=KHAKI_D, hat="peaked")),
+    "wilding": dict(hair=(64, 50, 38), mous=False,
+                    sport=dict(kit="tennis", col=WHITE, col2=WHITE_SHADE),
+                    war=dict(kit="tunic", col=KHAKI, col2=KHAKI_D, hat="peaked")),
+    "bell": dict(hair=(72, 54, 38), mous=False,
+                 sport=dict(kit="football", col=(206, 202, 196), col2=(170, 166, 160)),
+                 war=dict(kit="tunic", col=KHAKI, col2=KHAKI_D, hat="helmet")),
+    "tull": dict(hair=(44, 34, 28), mous=False, skin=DARK_SKIN, skin2=DARK_SKIN_SHADE,
+                 sport=dict(kit="football", col=(214, 210, 204), col2=(120, 116, 112)),
+                 war=dict(kit="tunic", col=KHAKI, col2=KHAKI_D, hat="peaked")),
+    "grant": dict(hair=(70, 54, 40), mous=False,
+                  sport=dict(kit="baseball", col=(232, 228, 219), col2=(196, 192, 184)),
+                  war=dict(kit="tunic", col=USARMY, col2=USARMY_D, hat="helmet")),
+    "baker": dict(hair=(128, 100, 62), mous=False,
+                  sport=dict(kit="football", col=(86, 78, 74), col2=(178, 118, 62)),
+                  war=dict(kit="flight", col=LEATHER, col2=LEATHER_D, hat="flight")),
+    "kusocinski": dict(hair=(72, 56, 40), mous=False,
+                       sport=dict(kit="singlet", col=WHITE, col2=WHITE_SHADE),
+                       war=dict(kit="tunic", col=(96, 88, 80), col2=(74, 68, 62))),
+    "kinnick": dict(hair=(96, 74, 50), mous=False,
+                    sport=dict(kit="football", col=(170, 134, 76), col2=(62, 56, 50)),
+                    war=dict(kit="flight", col=NAVY, col2=NAVY_D, hat="flight")),
+    "paddock": dict(hair=(64, 50, 36), mous=False,
+                    sport=dict(kit="singlet", col=WHITE, col2=WHITE_SHADE),
+                    war=dict(kit="tunic", col=USARMY, col2=USARMY_D, hat="peaked")),
+    "blozis": dict(hair=(70, 54, 38), mous=False, bulk=1.22,
+                   sport=dict(kit="football", col=(110, 118, 142), col2=(78, 84, 104)),
+                   war=dict(kit="tunic", col=USARMY, col2=USARMY_D, hat="helmet")),
+    "nishi": dict(hair=(36, 30, 28), mous=True,
+                  sport=dict(kit="riding", col=(172, 156, 118), col2=(132, 118, 88)),
+                  war=dict(kit="tunic", col=JAPAN, col2=JAPAN_D, hat="peaked")),
+    "lummus": dict(hair=(78, 60, 42), mous=False,
+                   sport=dict(kit="football", col=(110, 118, 142), col2=(78, 84, 104)),
+                   war=dict(kit="tunic", col=USARMY, col2=USARMY_D, hat="helmet")),
+    "_default": dict(hair=(66, 52, 40), mous=False,
+                     sport=dict(kit="singlet", col=WHITE, col2=WHITE_SHADE),
+                     war=dict(kit="tunic", col=HORIZON, col2=HORIZON_D, hat="kepi")),
 }
 
 CYCLE_POSES = {"run": 2.6, "sprint_lean": 3.0, "march": 1.5}
 
 
-def look_for(seed_id):
-    return LOOKS.get(str(seed_id).rsplit("_", 1)[0], LOOKS["_default"])
+def look_for(seed_id, ctx="war"):
+    base = LOOKS.get(str(seed_id).rsplit("_", 1)[0], LOOKS["_default"])
+    merged = {k: v for k, v in base.items() if k not in ("sport", "war")}
+    merged.update(base.get(ctx, base["war"]))
+    merged.setdefault("hat", None)
+    return merged
 
 
 def _skel(cx, cy, s, facing, p, extra=None):
@@ -284,8 +317,8 @@ def foot_drop(scale, pose, seed_id):
     return lowest + 3 * s
 
 
-def draw_person(d, cx, cy, scale, facing, pose, seed_id, t=0.0, seed=0):
-    lk = look_for(seed_id)
+def draw_person(d, cx, cy, scale, facing, pose, seed_id, t=0.0, seed=0, ctx="war"):
+    lk = look_for(seed_id, ctx)
     s = scale * lk.get("bulk", 1.0)
     p = POSES.get(pose, POSES["stand"])
     skin = lk.get("skin", SKIN)
