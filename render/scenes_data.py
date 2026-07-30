@@ -251,9 +251,94 @@ def cta_scene(t_start, duration, seed_id="cta_outro"):
 
 
 # ---------------------------------------------------------------------------
+# Artillery barrage interstitial -- the recurring "cannon flash" beat
+# ---------------------------------------------------------------------------
+def barrage_scene(t_start, duration, seed_id, caption=None, n_variants=3):
+    s = hash((seed_id, "barrage")) % 100000
+    bat = lib.artillery_battery(seed=s, n_guns=6)
+    muzzles = bat["muzzles"]
+    rng = lib.seeded_rng(s, "variants")
+
+    background = [
+        lambda figs, b=bat: {"strokes": b["strokes"], "texts": []},
+        lambda figs, ss=s: lib.star_field(seed=ss + 11),
+        lambda figs, ss=s: lib.foreground_trench(seed=ss + 50),
+    ]
+
+    def make_variant(sub, vseed):
+        strokes = []
+        for j, (mx, my, ma) in enumerate(sub):
+            # smoke first, and pushed well clear of the barrel tip -- drawn on
+            # top of / over the flame it just reads as scribble.
+            strokes += lib.smoke_puff(mx - 92, my - 104, scale=0.95, seed=vseed + 40 + j)["strokes"]
+            strokes += lib.muzzle_flash((mx, my), angle_deg=ma, scale=1.0, seed=vseed + j)["strokes"]
+        return {"strokes": strokes, "texts": []}
+
+    variants = []
+    for vi in range(n_variants):
+        sub = [m for m in muzzles if rng.random() < 0.55] or [muzzles[vi % len(muzzles)]]
+        variants.append(lambda figs, _sub=sub, _vs=s + 100 + vi * 17: make_variant(_sub, _vs))
+
+    spec = {"figures": [], "background": background, "foreground": [], "flash_variants": variants}
+    if caption:
+        spec["caption"] = caption
+        spec["caption_pos"] = CAP_POS
+    return {"t_start": t_start, "duration": duration, "spec": spec, "seed_id": seed_id}
+
+
+def splice_barrages(scenes, t0, t1, k, bar_dur=2.2, tag="s"):
+    """Insert `k` barrage beats spaced ~evenly through the section.
+
+    The section's total duration is a hard constraint (it has to land on the
+    user's cut point), so the room for the barrages is taken by shrinking the
+    existing scenes proportionally rather than by extending the section.
+    """
+    if k <= 0:
+        return scenes
+    total = t1 - t0
+    targets = [t0 + total * (i + 0.5) / k for i in range(k)]
+
+    ins = []
+    for tg in targets:
+        bi = min(range(len(scenes)), key=lambda i: abs(scenes[i]["t_start"] - tg))
+        while bi in ins:
+            bi += 1
+        if bi <= len(scenes):
+            ins.append(bi)
+    ins = sorted(set(ins))
+
+    shrink = (total - bar_dur * len(ins)) / total
+    out = []
+    bi = 0
+    for i, sc in enumerate(scenes):
+        if i in ins:
+            out.append(("bar", bi))
+            bi += 1
+        out.append(("sc", sc))
+
+    result = []
+    t = t0
+    for kind, payload in out:
+        if kind == "bar":
+            result.append(barrage_scene(t, bar_dur, f"{tag}_barrage_{payload}"))
+            t += bar_dur
+        else:
+            d = payload["duration"] * shrink
+            sc = dict(payload)
+            sc["t_start"] = t
+            sc["duration"] = d
+            result.append(sc)
+            t += d
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Section boundaries (seconds) -- exact per the user's cut points
 # ---------------------------------------------------------------------------
 SECTION_BOUNDS = [(0, 203), (203, 483), (483, 696), (696, 906)]
+
+# One barrage roughly every 30s -> 7/9/7/7 across the four sections.
+BARRAGE_COUNTS = [7, 9, 7, 7]
 
 
 def build_section1():
@@ -298,7 +383,7 @@ def build_section1():
         ],
         "Anthony Wilding", "New Zealand - tennis champion",
     )
-    return scenes
+    return splice_barrages(scenes, 0, 203, BARRAGE_COUNTS[0], tag='s1')
 
 
 def build_section2():
@@ -358,7 +443,7 @@ def build_section2():
         ],
         "Hobey Baker", "USA - hockey & football star",
     )
-    return scenes
+    return splice_barrages(scenes, 203, 483, BARRAGE_COUNTS[1], tag='s2')
 
 
 def build_section3():
@@ -403,7 +488,7 @@ def build_section3():
         ],
         "Charlie Paddock", 'USA - "world\'s fastest human"',
     )
-    return scenes
+    return splice_barrages(scenes, 483, 696, BARRAGE_COUNTS[2], tag='s3')
 
 
 def build_section4():
@@ -452,12 +537,12 @@ def build_section4():
     last = lummus_scenes[-1]
     lummus_scenes[-1] = cta_scene(last["t_start"], last["duration"])
     scenes += lummus_scenes
-    return scenes
+    return splice_barrages(scenes, 696, 906, BARRAGE_COUNTS[3], tag='s4')
 
 
 SECTIONS = [build_section1, build_section2, build_section3, build_section4]
 SECTION_NAMES = ["The First Weeks", "The Long Middle", "The Next One", "The Last Months"]
-EXPECTED_COUNTS = [40, 56, 43, 41]
+EXPECTED_COUNTS = [40 + 7, 56 + 9, 43 + 7, 41 + 7]
 
 
 def validate():

@@ -12,7 +12,7 @@ strokes progressively, and pop in the text labels near the end of the reveal.
 """
 import math
 
-from render.doodle import Stroke, cross_hatch, dot, seeded_rng, INK, OLIVE, BRICK, FONT_MARKER, FONT_HAND, FONT_SCRIPT
+from render.doodle import Stroke, FilledShape, cross_hatch, dot, seeded_rng, INK, OLIVE, BRICK, FONT_MARKER, FONT_HAND, FONT_SCRIPT
 
 
 def _mirror(points, cx):
@@ -749,3 +749,197 @@ def caption_banner(cx, cy, text, scale=1.0, seed=0, color=OLIVE, font=FONT_HAND,
     strokes = [Stroke(rect, color=color, width=3, seed=seed + 1, amplitude=1.3, closed=True, smooth=False)]
     texts = [((cx, cy), text, font, int(size * scale), 0.8, color, "mm")]
     return {"strokes": strokes, "texts": texts, "w": w, "h": h}
+
+
+# ---------------------------------------------------------------------------
+# Artillery barrage (the recurring "cannon flash" interstitial)
+# ---------------------------------------------------------------------------
+def _crest_y_at(crest, x):
+    for i in range(1, len(crest)):
+        x0, y0 = crest[i - 1]
+        x1, y1 = crest[i]
+        if x0 <= x <= x1:
+            t = (x - x0) / (x1 - x0 or 1.0)
+            return y0 + (y1 - y0) * t
+    return crest[-1][1]
+
+
+def artillery_battery(seed=0, scale=1.0, n_guns=6, crest_y=545, x0=70, x1=1860):
+    """A ridge line of field guns seen in silhouette from the opposing trench.
+
+    Returns the usual part dict plus `muzzles`: the barrel-tip position and
+    angle for each gun, so muzzle_flash() can be pinned to them later.
+    """
+    rng = seeded_rng(seed, "battery")
+    strokes = []
+    crest = []
+    steps = 10
+    for i in range(steps + 1):
+        t = i / steps
+        x = x0 + (x1 - x0) * t
+        y = crest_y + math.sin(t * 3.4 + 0.7) * 26 - t * 34 + rng.uniform(-5, 5)
+        crest.append((x, y))
+    strokes.append(Stroke(crest, color=INK, width=5, seed=seed + 1, amplitude=2.4))
+
+    # hatch the ridge face so it reads as a solid landform, not a bare line
+    for i in range(58):
+        hx = x0 + (i + 0.5) * (x1 - x0) / 58 + rng.uniform(-5, 5)
+        hy = _crest_y_at(crest, hx)
+        hl = rng.uniform(34, 78) * scale
+        strokes.append(Stroke([(hx, hy + 3), (hx - hl * 0.30, hy + hl)], color=INK, width=2, seed=seed + 300 + i, amplitude=0.9, alpha=120))
+
+    # sandbag parapet bumps riding the crest
+    for i in range(16):
+        bx = x0 + (i + 0.5) * (x1 - x0) / 16 + rng.uniform(-8, 8)
+        by = _crest_y_at(crest, bx)
+        bw = rng.uniform(20, 30) * scale
+        bh = rng.uniform(8, 13) * scale
+        arc = [(bx - bw / 2, by), (bx - bw * 0.25, by - bh), (bx + bw * 0.25, by - bh), (bx + bw / 2, by)]
+        strokes.append(Stroke(arc, color=INK, width=2, seed=seed + 40 + i, amplitude=1.0))
+
+    muzzles = []
+    span = (x1 - x0) * 0.74
+    gx0 = x0 + (x1 - x0) * 0.16
+    for g in range(n_guns):
+        gx = gx0 + span * (g / max(1, n_guns - 1)) + rng.uniform(-14, 14)
+        gy = _crest_y_at(crest, gx) - 4
+        s = scale * rng.uniform(0.9, 1.12)
+        wr = 17 * s
+        wheel = [(gx + wr * math.cos(a), gy - wr + wr * math.sin(a)) for a in [i / 14 * math.tau for i in range(15)]]
+        strokes.append(Stroke(wheel, color=INK, width=4, seed=seed + 100 + g, amplitude=1.3, closed=True))
+        strokes.append(Stroke([(gx + 12 * s, gy - wr * 0.6), (gx + 44 * s, gy + 2)], color=INK, width=4, seed=seed + 130 + g, amplitude=1.2))
+        ang = 143 + rng.uniform(-6, 6)
+        a = math.radians(ang)
+        blen = 96 * s
+        bx0, by0 = gx - 2 * s, gy - wr * 1.15
+        tipx, tipy = bx0 + math.cos(a) * blen, by0 - math.sin(a) * blen
+        strokes.append(Stroke([(bx0, by0), (tipx, tipy)], color=INK, width=7, seed=seed + 160 + g, amplitude=1.1))
+        strokes.append(Stroke([(bx0 - 6 * s, by0 + 6 * s), (bx0 + 10 * s, by0 - 4 * s)], color=INK, width=6, seed=seed + 190 + g, amplitude=0.9))
+        muzzles.append((tipx, tipy, ang))
+
+    # shell craters + debris across no-man's-land (otherwise a dead empty band)
+    for i in range(7):
+        cx_ = x0 + (x1 - x0) * (0.07 + 0.13 * i) + rng.uniform(-40, 40)
+        cy_ = rng.uniform(636, 726)
+        cw = rng.uniform(60, 130) * scale
+        ch = cw * rng.uniform(0.16, 0.26)
+        lip = [(cx_ - cw / 2, cy_), (cx_ - cw * 0.22, cy_ - ch), (cx_ + cw * 0.24, cy_ - ch * 0.85), (cx_ + cw / 2, cy_)]
+        strokes.append(Stroke(lip, color=INK, width=3, seed=seed + 400 + i, amplitude=1.6))
+        strokes.append(Stroke([(cx_ - cw * 0.32, cy_ + ch * 0.5), (cx_ + cw * 0.30, cy_ + ch * 0.45)], color=INK, width=2, seed=seed + 430 + i, amplitude=1.2, alpha=140))
+    for i in range(14):
+        dx_ = rng.uniform(x0 + 40, x1 - 40)
+        dy_ = rng.uniform(628, 740)
+        dl = rng.uniform(9, 20)
+        strokes.append(Stroke([(dx_, dy_), (dx_ + dl, dy_ - dl * rng.uniform(-0.5, 0.5))], color=INK, width=2, seed=seed + 500 + i, amplitude=0.8, alpha=130))
+
+    return {"strokes": strokes, "texts": [], "muzzles": muzzles, "crest": crest}
+
+
+def muzzle_flash(pos, angle_deg=148, scale=1.0, seed=0, color=BRICK):
+    """A filled flame burst pinned to a gun's barrel tip.
+
+    Solid-filled (not outlined) so the frame visibly brightens when it fires --
+    that jump is the whole point of the beat.
+    """
+    rng = seeded_rng(seed, "flash")
+    a = math.radians(angle_deg)
+    ux, uy = math.cos(a), -math.sin(a)
+    px, py = -uy, ux
+    x, y = pos
+    L = 132 * scale * rng.uniform(0.88, 1.18)
+    W = 30 * scale
+
+    def lobe(length, width, jag):
+        pts = []
+        steps = 7
+        for i in range(steps + 1):
+            t = i / steps
+            w = width * math.sin(math.pi * t * 0.94) * rng.uniform(1 - jag, 1 + jag)
+            d = length * t
+            pts.append((x + ux * d + px * w, y + uy * d + py * w))
+        for i in range(steps, -1, -1):
+            t = i / steps
+            w = width * math.sin(math.pi * t * 0.94) * rng.uniform(1 - jag, 1 + jag)
+            d = length * t
+            pts.append((x + ux * d - px * w, y + uy * d - py * w))
+        return pts
+
+    strokes = [
+        FilledShape(lobe(L, W, 0.22), color=color, seed=seed + 1, amplitude=2.6, outline=color, outline_width=3),
+    ]
+    # darker inner core reads as the hotter centre of the burst
+    strokes.append(FilledShape(lobe(L * 0.5, W * 0.42, 0.16), color=INK, seed=seed + 2, amplitude=1.5, alpha=150))
+    # radiating spikes
+    for i in range(4):
+        ang = a + rng.uniform(-0.6, 0.6)
+        d0, d1 = L * 0.78, L * rng.uniform(1.08, 1.45)
+        strokes.append(
+            Stroke(
+                [(x + math.cos(ang) * d0, y - math.sin(ang) * d0), (x + math.cos(ang) * d1, y - math.sin(ang) * d1)],
+                color=color, width=3, seed=seed + 10 + i, amplitude=1.5,
+            )
+        )
+    return {"strokes": strokes, "texts": []}
+
+
+def smoke_puff(cx, cy, scale=1.0, seed=0, color=OLIVE, n=3):
+    rng = seeded_rng(seed, "smoke")
+    strokes = []
+    for k in range(n):
+        r = (24 + k * 15) * scale
+        ox = cx + rng.uniform(-10, 10) - k * 13 * scale
+        oy = cy - k * 24 * scale + rng.uniform(-7, 7)
+        pts = []
+        m = 11
+        for i in range(m):
+            t = i / m * math.tau
+            rr = r * rng.uniform(0.76, 1.2)
+            pts.append((ox + rr * math.cos(t), oy + rr * 0.68 * math.sin(t)))
+        strokes.append(Stroke(pts, color=color, width=3, seed=seed + k, amplitude=2.8, closed=True))
+    return {"strokes": strokes, "texts": []}
+
+
+def foreground_trench(seed=0, scale=1.0, y=790, x0=40, x1=1890, n_men=5):
+    """The near trench the barrage is being watched from: parapet line, duckboard
+    ticks, and a few small crouching silhouettes."""
+    rng = seeded_rng(seed, "fgtrench")
+    strokes = []
+    lip = []
+    steps = 9
+    for i in range(steps + 1):
+        t = i / steps
+        lip.append((x0 + (x1 - x0) * t, y + math.sin(t * 4.1) * 13 + rng.uniform(-4, 4)))
+    strokes.append(Stroke(lip, color=INK, width=5, seed=seed + 1, amplitude=2.2))
+    strokes.append(Stroke([(x0, y + 120), (x1, y + 132)], color=INK, width=4, seed=seed + 2, amplitude=1.8))
+    # duckboard ticks between lip and floor
+    for i in range(22):
+        tx = x0 + (i + 0.5) * (x1 - x0) / 22
+        strokes.append(Stroke([(tx, y + 118), (tx + 8, y + 134)], color=INK, width=2, seed=seed + 20 + i, amplitude=0.7))
+    # sandbags on the near lip
+    for i in range(14):
+        bx = x0 + (i + 0.5) * (x1 - x0) / 14 + rng.uniform(-7, 7)
+        bw, bh = rng.uniform(24, 34) * scale, rng.uniform(9, 14) * scale
+        by = y + math.sin((bx - x0) / (x1 - x0) * 4.1) * 13
+        strokes.append(Stroke([(bx - bw / 2, by), (bx - bw * 0.25, by - bh), (bx + bw * 0.25, by - bh), (bx + bw / 2, by)], color=INK, width=2, seed=seed + 60 + i, amplitude=1.0))
+    # small crouching soldiers looking over the lip
+    for i in range(n_men):
+        mx = x0 + (x1 - x0) * (0.13 + 0.18 * i) + rng.uniform(-24, 24)
+        my = y + 96
+        hs = 13 * scale
+        head = [(mx + hs * math.cos(a), my - hs + hs * math.sin(a)) for a in [j / 10 * math.tau for j in range(11)]]
+        strokes.append(Stroke(head, color=INK, width=4, seed=seed + 200 + i, amplitude=1.1, closed=True))
+        strokes.append(Stroke([(mx, my + hs * 0.1), (mx + rng.uniform(-5, 5), my + 42)], color=INK, width=5, seed=seed + 230 + i, amplitude=1.2))
+        strokes.append(Stroke([(mx - 16, my + 16), (mx + 17, my + 9)], color=INK, width=4, seed=seed + 260 + i, amplitude=1.1))
+    return {"strokes": strokes, "texts": []}
+
+
+def star_field(seed=0, n=14, y_max=400, x0=140, x1=1790, color=OLIVE):
+    rng = seeded_rng(seed, "stars")
+    strokes = []
+    for i in range(n):
+        sx = rng.uniform(x0, x1)
+        sy = rng.uniform(70, y_max)
+        r = rng.uniform(2.0, 3.2)
+        strokes.append(Stroke([(sx - r, sy), (sx + r, sy)], color=color, width=2, seed=seed + i, amplitude=0.4))
+        strokes.append(Stroke([(sx, sy - r), (sx, sy + r)], color=color, width=2, seed=seed + 100 + i, amplitude=0.4))
+    return {"strokes": strokes, "texts": []}

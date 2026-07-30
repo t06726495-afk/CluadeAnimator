@@ -312,3 +312,36 @@ def dot(draw, center, r, color=INK, alpha=255):
     x, y = center
     col = color + (alpha,) if len(color) == 3 else color
     draw.ellipse([x - r, y - r, x + r, y + r], fill=col)
+
+
+class FilledShape:
+    """A hand-wobbled closed shape drawn as a solid fill (optionally outlined).
+
+    Stroke-compatible (same .draw(draw, frac) interface) so it can sit in the
+    same ordered stroke lists. Used for things that must read as a bright mass
+    rather than a contour -- muzzle flashes above all: an outline-only flame
+    barely shifts the frame's brightness, so it doesn't register as a flash.
+    """
+
+    __slots__ = ("points", "color", "alpha", "outline", "outline_width", "total_len", "length_cum")
+
+    def __init__(self, anchors, color=BRICK, seed=0, amplitude=2.4, alpha=255, outline=None, outline_width=3):
+        anchors = list(anchors)
+        if anchors[0] != anchors[-1]:
+            anchors = anchors + [anchors[0]]
+        self.points = wobble_points(anchors, amplitude=amplitude, seed=seed, smooth=True, overshoot=0.0)
+        self.color = color
+        self.alpha = alpha
+        self.outline = outline
+        self.outline_width = outline_width
+        self.total_len = 1.0
+        self.length_cum = [0.0, 1.0]
+
+    def draw(self, draw: ImageDraw.ImageDraw, frac=1.0):
+        if frac <= 0 or len(self.points) < 3:
+            return
+        col = self.color + (self.alpha,) if len(self.color) == 3 else self.color
+        draw.polygon(self.points, fill=col)
+        if self.outline:
+            oc = self.outline + (255,) if len(self.outline) == 3 else self.outline
+            draw.line(list(self.points) + [self.points[0]], fill=oc, width=self.outline_width, joint="curve")

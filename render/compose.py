@@ -32,11 +32,15 @@ def get_paper():
 
 
 class Scene:
-    def __init__(self, strokes, eye_dots, texts):
+    def __init__(self, strokes, eye_dots, texts, flash_variants=None):
         self.strokes = strokes          # ordered list[Stroke]
         self.eye_dots = eye_dots        # list of (pos, r, color)
         self.texts = texts              # list of (pos, text, font_path, size, rotate, color, anchor)
         self.n = len(strokes)
+        # Alternate overlay stroke-sets (muzzle flashes). Deliberately kept out
+        # of `strokes` so they take no part in the marker reveal -- they are
+        # punched in and out during the hold instead of being drawn once.
+        self.flash_variants = flash_variants or []
 
     def draw_upto(self, draw: ImageDraw.ImageDraw, global_frac):
         if self.n == 0:
@@ -126,7 +130,12 @@ def build_scene(spec, seed_base):
         )
         add_part(part)
 
-    return Scene(strokes, eye_dots, texts)
+    flash_variants = []
+    for item in spec.get("flash_variants", []):
+        part = item(figs) if callable(item) else item
+        flash_variants.append(part["strokes"])
+
+    return Scene(strokes, eye_dots, texts, flash_variants=flash_variants)
 
 
 # ---------------------------------------------------------------------------
@@ -195,6 +204,31 @@ def render_scene_frames(scene: Scene, duration, fps=24, seed_id=0, zoom_end=1.07
     padded.paste(final_design, (OFFSET_X, OFFSET_Y))
     padded_rgb = padded.convert("RGB")
 
+    # One fully-composited canvas per flash state, built once up front: the
+    # Ken Burns pass then just picks which canvas to crop from per frame, so a
+    # flashing scene costs the same per frame as a still one.
+    flash_padded = []
+    for variant in scene.flash_variants:
+        lit = final_design.copy()
+        ld = ImageDraw.Draw(lit)
+        for st in variant:
+            st.draw(ld, 1.0)
+        p = get_paper().copy().convert("RGBA")
+        p.paste(lit, (OFFSET_X, OFFSET_Y))
+        flash_padded.append(p.convert("RGB"))
+
+    # Staggered firing schedule: short bursts (2-4 frames) separated by gaps,
+    # each burst lighting a different subset of the battery.
+    flash_at = {}
+    if flash_padded:
+        f = int(fps * 0.12)
+        while f < n_hold:
+            v = rng.randrange(len(flash_padded))
+            for d in range(rng.randint(2, 4)):
+                if f + d < n_hold:
+                    flash_at[f + d] = v
+            f += rng.randint(int(fps * 0.30), int(fps * 0.85))
+
     dx = rng.uniform(-0.025, 0.025)
     dy = rng.uniform(-0.018, 0.018)
     start_center = (0.5 - dx * 0.3, 0.5 - dy * 0.3)
@@ -207,7 +241,9 @@ def render_scene_frames(scene: Scene, duration, fps=24, seed_id=0, zoom_end=1.07
         zoom = z0 + (zoom_end - z0) * e
         cx = start_center[0] + (end_center[0] - start_center[0]) * e
         cy = start_center[1] + (end_center[1] - start_center[1]) * e
-        frame = _crop_zoom(padded_rgb, zoom, (cx, cy))
+        v = flash_at.get(k)
+        src = padded_rgb if v is None else flash_padded[v]
+        frame = _crop_zoom(src, zoom, (cx, cy))
         yield np.asarray(frame)
 
 
