@@ -32,10 +32,24 @@ ffmpeg -version && ffprobe -version
 
 Missing? `apt install ffmpeg` or `brew install ffmpeg`.
 
-Transcription needs one of: `whisper-cli` (whisper.cpp, local and free — the
-default), the `whisper` Python package, or `GROQ_API_KEY` / `OPENAI_API_KEY` in
-the environment. Prefer local: an hour of footage is a large upload, and the
-audio never has to leave the machine.
+Transcription picks a backend automatically, local first — an hour of footage is
+a large upload and the audio never has to leave the machine. Install one:
+
+| | Command | Notes |
+|---|---|---|
+| Mac | `brew install whisper-cpp` | Fastest. Also download a model (see below). |
+| Any platform | `pip install openai-whisper` | One command, no model download, but slow on CPU — budget 30–60 min per hour of footage. |
+| API fallback | set `GROQ_API_KEY` | Fast, cheap, but uploads your audio. |
+
+whisper.cpp needs a model file:
+
+```bash
+curl -L -o ggml-base.en.bin \
+  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin
+# then: transcribe.py ... --model ggml-base.en.bin
+```
+
+If nothing is installed, `transcribe.py` says so and lists these options.
 
 ---
 

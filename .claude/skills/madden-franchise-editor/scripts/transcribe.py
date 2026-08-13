@@ -29,6 +29,34 @@ from common import die, normalize_transcript, require, write_json
 CHUNK_SECONDS = 900  # 15 min — keeps API uploads under the 25 MB cap
 
 
+def find_whisper_cpp() -> str | None:
+    """whisper.cpp ships under several names depending on how it was installed."""
+    for name in ("whisper-cli", "whisper-cpp", "main"):
+        path = shutil.which(name)
+        if path:
+            return path
+    return None
+
+
+def autodetect_backend() -> str:
+    """Prefer whatever is actually installed, local first — no upload, no key."""
+    if find_whisper_cpp():
+        return "cpp"
+    if shutil.which("whisper"):
+        return "local"
+    if os.environ.get("GROQ_API_KEY"):
+        return "groq"
+    if os.environ.get("OPENAI_API_KEY"):
+        return "openai"
+    die(
+        "no transcription backend available. Install one:\n"
+        "  brew install whisper-cpp          (Mac — fastest)\n"
+        "  pip install openai-whisper        (any platform, slower on CPU)\n"
+        "or set GROQ_API_KEY to use the API."
+    )
+    return "cpp"  # unreachable; keeps type checkers happy
+
+
 def extract_audio(video: Path, out: Path, start: float | None = None,
                   duration: float | None = None) -> Path:
     cmd = ["ffmpeg", "-v", "error", "-y"]
@@ -45,9 +73,17 @@ def extract_audio(video: Path, out: Path, start: float | None = None,
 # ------------------------------------------------------------------- local paths
 
 def run_whisper_cpp(audio: Path, model: str) -> dict:
-    binary = shutil.which("whisper-cli") or shutil.which("main")
+    binary = find_whisper_cpp()
     if not binary:
         die("whisper.cpp not found — install it or use --backend groq")
+    if not Path(model).exists():
+        die(
+            f"whisper.cpp model not found: {model}\n"
+            "Download one, e.g.:\n"
+            "  curl -L -o ggml-base.en.bin https://huggingface.co/ggerganov/"
+            "whisper.cpp/resolve/main/ggml-base.en.bin\n"
+            "then pass --model ggml-base.en.bin"
+        )
     out_prefix = audio.with_suffix("")
     subprocess.run(
         [binary, "-m", model, "-f", str(audio), "-oj", "-of", str(out_prefix)],
@@ -139,10 +175,12 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("video")
     ap.add_argument("-o", "--out", default="work/transcript.json")
-    ap.add_argument("--backend", default="cpp",
-                    choices=["cpp", "local", "groq", "openai"])
-    ap.add_argument("--model", default="models/ggml-base.en.bin",
-                    help="whisper.cpp model path, or model name for --backend local")
+    ap.add_argument("--backend", default="auto",
+                    choices=["auto", "cpp", "local", "groq", "openai"],
+                    help="default: pick whatever is installed, local first")
+    ap.add_argument("--model", default=None,
+                    help="whisper.cpp model path, or model name for --backend local "
+                         "(default: ggml-base.en.bin / base.en)")
     args = ap.parse_args()
 
     require("ffmpeg", "ffprobe")
@@ -150,16 +188,21 @@ def main() -> None:
     if not video.exists():
         die(f"no such file: {video}")
 
+    backend = args.backend if args.backend != "auto" else autodetect_backend()
+    model = args.model or ("ggml-base.en.bin" if backend == "cpp" else "base.en")
+    if args.backend == "auto":
+        print(f"using {backend} backend", file=sys.stderr)
+
     workdir = Path(args.out).parent / "audio"
     workdir.mkdir(parents=True, exist_ok=True)
 
-    if args.backend in ("groq", "openai"):
-        raw = run_api(video, workdir, args.backend)
+    if backend in ("groq", "openai"):
+        raw = run_api(video, workdir, backend)
         segments = raw["segments"]
     else:
         audio = extract_audio(video, workdir / "full.wav")
-        raw = (run_whisper_cpp(audio, args.model) if args.backend == "cpp"
-               else run_whisper_local(audio, args.model))
+        raw = (run_whisper_cpp(audio, model) if backend == "cpp"
+               else run_whisper_local(audio, model))
         segments = normalize_transcript(raw)
 
     if not segments:
