@@ -1,0 +1,367 @@
+{
+  "_comment": "Verbal cues extracted from Browns EP1-6 and Commanders EP1-2. Patterns are case-insensitive regex matched against transcript utterances. 'strength' 0-1 indicates how reliably the cue marks a real boundary.",
+
+  "segment_boundaries": [
+    {
+      "label": "cold_open",
+      "strength": 0.95,
+      "position": "episode_start",
+      "patterns": [
+        "^today,? (our|begins|we)",
+        "^(our|the) [a-z ]+ (are|is) (set|headed|embark)",
+        "^a new season of",
+        "\\bis my franchise team this year\\b",
+        "\\bare the franchise team this year\\b"
+      ]
+    },
+    {
+      "label": "cta_open",
+      "strength": 0.9,
+      "patterns": [
+        "hit the like button",
+        "subscribe to the channel if you('re| are) new",
+        "welcome everybody to"
+      ]
+    },
+    {
+      "label": "recap",
+      "strength": 0.8,
+      "patterns": [
+        "^last episode",
+        "\\bin the last episode\\b",
+        "\\bat the end of the last episode\\b",
+        "\\bcoming off (their|our) first win\\b",
+        "\\bwe went through the preseason\\b",
+        "\\bwe (also )?took our (very )?first look\\b"
+      ]
+    },
+    {
+      "label": "roster_moves",
+      "strength": 0.75,
+      "patterns": [
+        "\\bwe'?re going to (sign|add|cut|release)\\b",
+        "\\bwill be cut\\b",
+        "\\bheaded to the practice squad\\b",
+        "\\bthrough free agency\\b",
+        "\\bone man'?s trash is another man'?s treasure\\b",
+        "\\bwe need another\\b",
+        "\\blook at the market\\b"
+      ]
+    },
+    {
+      "label": "roster_cuts",
+      "strength": 0.9,
+      "patterns": [
+        "\\bnow it'?s time for some tough decisions\\b",
+        "\\bwe'?ve got to cut some guys\\b",
+        "\\bit'?s time for roster cuts\\b",
+        "\\bwe have to release \\d+ players\\b",
+        "\\bthe 53 is ready to rock\\b",
+        "\\bmakes the (final )?(53|roster)\\b"
+      ]
+    },
+    {
+      "label": "opponent_preview",
+      "strength": 0.8,
+      "patterns": [
+        "\\blet'?s (take a )?look at (our|the) (week \\w+ )?opponent\\b",
+        "\\blet'?s look at (the|this) ([A-Z][a-z]+ )?(matchup|team)\\b",
+        "\\bas we (go|head) into week\\b",
+        "\\binto week (number )?\\w+\\b",
+        "\\bwe'?re headed (to|on the road|across the pond)\\b",
+        "\\blet'?s discuss (this|the) (game|matchup)\\b"
+      ]
+    },
+    {
+      "label": "position_group",
+      "strength": 0.7,
+      "position": "roster_tour",
+      "patterns": [
+        "\\b(as we )?mov(e|ing) (over )?to the ([a-z ]+) position\\b",
+        "\\bthat brings us to the ([a-z ]+) position\\b",
+        "\\blet'?s move (over )?to the ([a-z ]+)\\b",
+        "\\bas we move over to the (secondary|offense|defense|line)\\b",
+        "\\bwe'?ll start with the ([a-z ]+) room\\b",
+        "\\bthe ([a-z ]+) room (is|should be|has)\\b"
+      ]
+    },
+    {
+      "label": "game_start",
+      "strength": 0.9,
+      "patterns": [
+        "\\bwe'?re ready to rock and roll\\b",
+        "\\bseason number one is underway\\b",
+        "\\bis underway\\b",
+        "\\bstarts? (on|with the ball|with offense)\\b",
+        "\\bwill start with the ball\\b",
+        "\\bhere comes the [A-Z][a-z]+ offense\\b",
+        "\\bon the return\\b"
+      ]
+    },
+    {
+      "label": "quarter_boundary",
+      "strength": 0.85,
+      "patterns": [
+        "\\bthat'?ll wrap up the (first|second|third|fourth)\\b",
+        "\\bthat will wrap up the (first|second|third)\\b",
+        "\\bthat'?ll do it (for the|through) (first|third)\\b",
+        "\\bas we move into the (second|third|fourth) quarter\\b",
+        "\\bthat brings us into the (second|third|fourth)\\b",
+        "\\bto start the (second|third|fourth)\\b",
+        "\\bthe two-minute warning\\b"
+      ]
+    },
+    {
+      "label": "halftime_report",
+      "strength": 0.95,
+      "patterns": [
+        "\\blet'?s take a look at (our|the) halftime report\\b",
+        "\\bour halftime (report|show)\\b",
+        "\\bhalftime highlights\\b",
+        "\\bgoing into the break\\b"
+      ]
+    },
+    {
+      "label": "postgame_analysis",
+      "strength": 0.9,
+      "patterns": [
+        "\\band that('?ll| will) do it\\b",
+        "\\bhang on to win it\\b",
+        "\\bwill win (it|their)\\b",
+        "\\bfall to (a record of )?\\d+ and\\d+\\b",
+        "\\bwe finished the preseason\\b",
+        "\\bstill some positives to take away\\b",
+        "\\bi give us (a lot of )?credit\\b"
+      ]
+    },
+    {
+      "label": "weekly_recap",
+      "strength": 0.95,
+      "patterns": [
+        "\\blet'?s take a look at (our|some) (weekly recap|scores)\\b",
+        "\\bour weekly recap\\b",
+        "\\bacross the rest of the (nfl|league|national football league)\\b",
+        "\\bas for (your|the) players of the week\\b",
+        "\\bwe'?ll start (things off )?in\\b"
+      ]
+    },
+    {
+      "label": "prospect_profile",
+      "strength": 0.9,
+      "patterns": [
+        "\\bour (very )?first prospect profile\\b",
+        "\\bprospect profile\\b",
+        "\\bthis year'?s draft class\\b",
+        "\\bwe'?re going to be going over the (quarterbacks|prospects)\\b",
+        "\\blet'?s look at the day two crop\\b"
+      ]
+    },
+    {
+      "label": "next_setup",
+      "strength": 0.85,
+      "patterns": [
+        "\\bin the next episode\\b",
+        "\\bthe next episode\\b",
+        "\\bthat'?ll bring us (in)?to week\\b",
+        "\\bwe'?ll get to (that|it) next\\b",
+        "\\bnext (week|up),? we'?re headed\\b",
+        "\\bi think we'?re going to play two games\\b"
+      ]
+    },
+    {
+      "label": "cta_close",
+      "strength": 0.98,
+      "position": "episode_end",
+      "patterns": [
+        "\\bmake sure to (leave a like|hit the like button)\\b",
+        "\\bhope you guys enjoyed\\b",
+        "\\blet me know in the comments\\b",
+        "\\bmake sure to let me know\\b"
+      ]
+    },
+    {
+      "label": "episode_end",
+      "strength": 1.0,
+      "position": "episode_end",
+      "patterns": [
+        "\\bpeace out\\b"
+      ]
+    }
+  ],
+
+  "play_boundaries": {
+    "_comment": "Within a gameplay segment these mark individual plays. Used to find trim points at the snap.",
+    "strength": 0.85,
+    "patterns": [
+      "\\b(first|second|third|fourth) (down )?and (goal|inches?|\\d+)\\b",
+      "\\bfirst and goal\\b",
+      "\\b(he|they)'?ll (hand|hands) it off\\b",
+      "\\bplay action\\b",
+      "\\bin motion\\b",
+      "\\blooks to throw it\\b",
+      "\\bfrom the \\d+( yard line)?\\b",
+      "\\bunder cent(er|re)\\b",
+      "\\brpo\\b",
+      "\\bin (the )?back ?field\\b"
+    ]
+  },
+
+  "hype_markers": {
+    "_comment": "Excitement spikes. Combined with audio RMS to find highlight candidates. Weight is added to the moment score.",
+    "tier_1": {
+      "weight": 1.0,
+      "patterns": [
+        "\\btouchdown\\b",
+        "\\bpick ?six\\b",
+        "\\bscoop and score\\b",
+        "\\bto the (crib|house)\\b",
+        "\\bit'?s intercepted\\b",
+        "\\bpicks it off\\b",
+        "\\bstrip sack\\b",
+        "\\bwalks the red carpet\\b",
+        "\\bhe is in for a (score|touchdown)\\b",
+        "\\boff to the races\\b",
+        "\\bgame[- ]winning\\b"
+      ]
+    },
+    "tier_2": {
+      "weight": 0.7,
+      "patterns": [
+        "\\boh my (goodness|god)\\b",
+        "\\bwhat a (play|catch|throw|run|dime|game)\\b",
+        "\\bare you kidding\\b",
+        "\\bholy (cow|goodness)\\b",
+        "\\bmy jaw is on the floor\\b",
+        "\\bunbelievable\\b",
+        "\\blook at (him go|that)\\b",
+        "\\bgood ?god\\b",
+        "\\bwoo+!?\\b",
+        "\\bwhoop!?\\b",
+        "\\bboom\\b",
+        "\\bwelcome to the nfl\\b",
+        "\\bjuke move\\b",
+        "\\bstiff ?arm\\b",
+        "\\bspin move\\b",
+        "\\bhat[- ]?trick\\b"
+      ]
+    },
+    "tier_3": {
+      "weight": 0.4,
+      "patterns": [
+        "\\b(he is|he'?s) sacked\\b",
+        "\\bbroken? (up|away)\\b",
+        "\\bfumbles? the ball\\b",
+        "\\bbig hit\\b",
+        "\\bbreaks? the tackle\\b",
+        "\\bfourth down\\b",
+        "\\bhis kick is (good|no good)\\b",
+        "\\bfirst down\\b"
+      ]
+    }
+  },
+
+  "catchphrases": {
+    "_comment": "Brand moments. NEVER cut these even if the surrounding play scores low. Each is a caption candidate.",
+    "patterns": [
+      "\\bwacko for flacco\\b",
+      "\\bbig booty judy\\b",
+      "\\bthe king (has entered|returns to)\\b",
+      "\\bsonic and knuckles\\b",
+      "\\byou got barbecue back there\\b",
+      "\\bball don'?t lie\\b",
+      "\\bi (apologize|was not familiar with your game)\\b",
+      "\\bone man'?s trash\\b",
+      "\\bwelcome to the nfl\\b",
+      "\\brisk it for the biscuit\\b",
+      "\\bthat,? my friends,? is called progress\\b",
+      "\\bpeace out\\b",
+      "\\bnot so fast,? my friend\\b",
+      "\\bthat guy is (an absolute )?game ?(wreck|record)er\\b"
+    ]
+  },
+
+  "comedy_beats": {
+    "_comment": "Comedic opportunities. Flag for a possible comedic insert or caption emphasis per edit-grammar.md.",
+    "ea_bug": {
+      "patterns": [
+        "\\bthese stats are not (right|accurate)\\b",
+        "\\bgood job,? ea\\b",
+        "\\bthe graphic is off\\b",
+        "\\bwhy is .{0,30} (silver|celebrating)\\b",
+        "\\bdidn'?t work\\b",
+        "\\bit looks like rookie difficulty\\b",
+        "\\bthese highlights are (so funny|hilarious)\\b",
+        "\\bthat'?s (shamar|the wrong) .{0,20} picture\\b"
+      ]
+    },
+    "fourth_wall": {
+      "patterns": [
+        "\\bbreak the (third|fourth) wall\\b",
+        "\\bi was (not usering|trying to click)\\b",
+        "\\bthat is not my fault\\b",
+        "\\bi lost count\\b",
+        "\\bif you'?re new to (my channel|the channel)\\b"
+      ]
+    },
+    "real_world_tangent": {
+      "patterns": [
+        "\\b\\d+[- ]time (nba )?all[- ]star\\b",
+        "\\bcuts the lead down to\\b",
+        "\\bwho hit a huge three\\b",
+        "\\buniversity'?s finest\\b",
+        "\\bfor those of you who play\\b"
+      ]
+    },
+    "self_roast": {
+      "patterns": [
+        "\\bdoom and gloom\\b",
+        "\\bbar on the floor\\b",
+        "\\blooks? lifeless\\b",
+        "\\bunmitigated disaster\\b",
+        "\\bit is bleak\\b",
+        "\\bwe'?re screwed\\b",
+        "\\bslopfest\\b",
+        "\\bhow in the (world|hell)\\b"
+      ]
+    }
+  },
+
+  "filler": {
+    "_comment": "Cut candidates. High confidence that these spans add nothing.",
+    "patterns": [
+      "^(uh|um|so|okay|alright),?\\s*$",
+      "\\blet me (restart|try that again|pull this up)\\b",
+      "\\bhold on( a (minute|second))?\\b",
+      "\\bgive me (a )?(second|sec)\\b",
+      "\\bwhere (is|was) that\\b",
+      "\\bi'?m going to (pull up|find)\\b",
+      "\\bone (second|sec)\\b",
+      "\\bwhat was i (saying|doing)\\b",
+      "\\bsorry,? (i|let me)\\b"
+    ]
+  },
+
+  "menu_context": {
+    "_comment": "Narration signals that a roster/stat/contract screen is on display and should be LEFT VISIBLE, not cut away from. See edit-grammar.md 'let information breathe'.",
+    "patterns": [
+      "\\b\\d{2} overall\\b",
+      "\\b(superstar|star|hidden|normal) (x-?factor|development|dev)\\b",
+      "\\b\\d+ (speed|acceleration|agility|throw power)\\b",
+      "\\b\\$?\\d+(\\.\\d+)? million\\b",
+      "\\byears?,? \\$\\d+\\b",
+      "\\bcontract\\b",
+      "\\bdepth chart\\b",
+      "\\basking price\\b",
+      "\\bcap (penalty|space|hit)\\b",
+      "\\bhis kick is\\b",
+      "\\b\\d+ of \\d+,? \\d+ yards?\\b",
+      "\\b\\d+ for \\d+\\b",
+      "\\bcompletion percentage\\b",
+      "\\bpasser rating\\b",
+      "\\btackles?,? \\w+ for a loss\\b",
+      "\\bprojected to (finish|have|go)\\b",
+      "\\bthe schedule\\b",
+      "\\bstandings\\b"
+    ]
+  }
+}
